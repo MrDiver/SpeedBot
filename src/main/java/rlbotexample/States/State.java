@@ -1,7 +1,10 @@
 package rlbotexample.States;
 
 import rlbot.Bot;
+import rlbotexample.Controller.AbstractAction;
 import rlbotexample.Controller.Action;
+import rlbotexample.Controller.ActionChain;
+import rlbotexample.Controller.ActionPart;
 import rlbotexample.input.Information;
 
 import javax.sound.sampled.Line;
@@ -9,7 +12,7 @@ import javax.sound.sampled.Line;
 public abstract class State {
 
     Information information;
-    long starttime;
+    float starttime;
     public State(Information information)
     {
         this.information = information;
@@ -18,7 +21,7 @@ public abstract class State {
      * Returns the state that should be executed
      * @return the action that should be taken
      */
-    public abstract Action getAction();
+    public abstract AbstractAction getAction();
 
     /**
      * Draws Information about the current state should diplay name of the current state
@@ -29,6 +32,21 @@ public abstract class State {
     public abstract double getRating();
     public void start()
     {
-        starttime = System.currentTimeMillis();
+        starttime = information.secondsElapsed();
+    }
+
+    protected ActionChain chain(float time)
+    {
+        return new ActionChain(time,information);
+    }
+
+    protected Action action(float time)
+    {
+        return new Action(time,information);
+    }
+
+    protected ActionPart part(float start,float end)
+    {
+        return new ActionPart(start,end);
     }
 }

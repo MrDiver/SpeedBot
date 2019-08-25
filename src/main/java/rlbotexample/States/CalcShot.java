@@ -3,6 +3,7 @@ package rlbotexample.States;
 import rlbot.Bot;
 import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
+import rlbotexample.Controller.AbstractAction;
 import rlbotexample.Controller.Action;
 import rlbotexample.Controller.ActionPart;
 import rlbotexample.Objects.Goal;
@@ -22,7 +23,7 @@ public class CalcShot extends State {
     Vector3 goaltome;
     Vector3 targetLocation;
     @Override
-    public Action getAction() {
+    public AbstractAction getAction() {
         /*goalLocal = information.me.transformToLocal(information.eneGoal);
         goaltoball = information.ball.location().minus(information.eneGoal.location()).normalized();
         goaltome = information.me.location().minus(information.eneGoal.location()).normalized();
@@ -98,7 +99,7 @@ public class CalcShot extends State {
 
 
 
-        Action a = new Action(0);
+        Action a = new Action(0,information);
         double currentspeed = information.me.velocity().flatten().magnitude();
         a.add(new ActionPart(0,100).withSteer((float)Util.steer(angletotarget)));
 
