@@ -2,25 +2,15 @@ package rlbotexample;
 
 import rlbot.Bot;
 import rlbot.ControllerState;
-import rlbot.cppinterop.RLBotDll;
 import rlbot.flat.GameTickPacket;
-import rlbot.gamestate.*;
-import rlbot.manager.BotLoopRenderer;
-import rlbot.render.Renderer;
 import rlbotexample.Controller.ActionController;
 import rlbotexample.Objects.BoostPadManager;
 import rlbotexample.States.*;
 import rlbotexample.boost.BoostManager;
-import rlbotexample.boost.BoostPad;
-import rlbotexample.dropshot.DropshotTile;
 import rlbotexample.dropshot.DropshotTileManager;
-import rlbotexample.dropshot.DropshotTileState;
-import rlbotexample.input.CarData;
-import rlbotexample.input.DataPacket;
 import rlbotexample.input.Information;
 import rlbotexample.output.ControlsOutput;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class SpeedBot implements Bot {
@@ -39,9 +29,9 @@ public class SpeedBot implements Bot {
         states = new ArrayList<>();
         states.add(new Position(information));
         states.add(new CalcShot(information));
-        states.add(new Wait(information));
+        //states.add(new Wait(information));
         //states.add(new TestActions(information));
-        //states.add(new Kickoff(information));
+        states.add(new Kickoff(information));
     }
 
     /**
@@ -75,38 +65,6 @@ public class SpeedBot implements Bot {
         return state;
     }
 
-    /**
-     * This is a nice example of using the rendering feature.
-     */
-    private void drawDebugLines(DataPacket input, CarData myCar, boolean goLeft) {
-        // Here's an example of rendering debug data on the screen.
-        Renderer renderer = BotLoopRenderer.forBotLoop(this);
-
-        // Draw a line from the car to the ball
-        renderer.drawLine3d(Color.LIGHT_GRAY, myCar.position, input.ball.position);
-
-        // Draw a line that points out from the nose of the car.
-        renderer.drawLine3d(goLeft ? Color.BLUE : Color.RED,
-                myCar.position.plus(myCar.orientation.noseVector.scaled(150)),
-                myCar.position.plus(myCar.orientation.noseVector.scaled(300)));
-
-        renderer.drawString3d(goLeft ? "left" : "right", Color.WHITE, myCar.position, 2, 2);
-
-        for (DropshotTile tile: DropshotTileManager.getTiles()) {
-            if (tile.getState() == DropshotTileState.DAMAGED) {
-                renderer.drawCenteredRectangle3d(Color.YELLOW, tile.getLocation(), 4, 4, true);
-            } else if (tile.getState() == DropshotTileState.DESTROYED) {
-                renderer.drawCenteredRectangle3d(Color.RED, tile.getLocation(), 4, 4, true);
-            }
-        }
-
-        // Draw a rectangle on the tile that the car is on
-        DropshotTile tile = DropshotTileManager.pointToTile(myCar.position.flatten());
-        if (tile != null) renderer.drawCenteredRectangle3d(Color.green, tile.getLocation(), 8, 8, false);
-    }
-
-
-    @Override
     public int getIndex() {
         return this.playerIndex;
     }
@@ -128,12 +86,6 @@ public class SpeedBot implements Bot {
         BoostPadManager.loadGameTickPacket(packet);
         DropshotTileManager.loadGameTickPacket(packet);
         information.loadGameTickPacket(packet);
-        // Translate the raw packet data (which is in an unpleasant format) into our custom DataPacket class.
-        // The DataPacket might not include everything from GameTickPacket, so improve it if you need to!
-        //DataPacket dataPacket = new DataPacket(packet, playerIndex);
-
-        // Do the actual logic using our dataPacket.
-
 
         ControlsOutput controlsOutput = processInput();
 

@@ -3,6 +3,7 @@ package rlbotexample.States;
 import rlbot.Bot;
 import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
+import rlbotexample.Controller.AbstractAction;
 import rlbotexample.Controller.Action;
 import rlbotexample.Controller.ActionPart;
 import rlbotexample.Objects.Ball;
@@ -31,7 +32,7 @@ public Position(Information information) {
     Vector3 target;
     double angletotarget;
     @Override
-    public Action getAction() {
+    public AbstractAction getAction() {
         //Calculating Data
         leftPost = information.eneGoal.leftPost();
         rightPost = information.eneGoal.rightPost();
@@ -53,7 +54,7 @@ public Position(Information information) {
 
         //Calculating Action
         double currentspeed = information.me.velocity().flatten().magnitude();
-        Action a = new Action(0);
+        Action a = new Action(0,information);
         a.add(new ActionPart(0,100).withSteer((float)Util.steer(angletotarget)));
         if(targetspeed > 1400 && targetspeed > currentspeed && starttime > 2500 && currentspeed < 2250)
         {
@@ -71,7 +72,7 @@ public Position(Information information) {
         if(Util.ballReady(information) && delta > 2200 && distancetotarget < 270)
         {
             this.start();
-            return Action.dodge(100,angletotarget);
+            return Action.dodge(100,angletotarget,true,information);
         }
         return a;
     /*    Ball ball = information.ball;

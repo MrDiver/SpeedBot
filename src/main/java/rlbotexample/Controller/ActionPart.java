@@ -5,8 +5,8 @@ import rlbotexample.output.ControlsOutput;
 import java.util.ArrayList;
 
 public class ActionPart {
-    private long startTime;
-    private long endTime;
+    private float startTime;
+    private float endTime;
     private ArrayList<Function> functions;
 
     /**
@@ -15,10 +15,10 @@ public class ActionPart {
      * @param start relative start time
      * @param end relative end time
      */
-    public ActionPart(long start,long end)
+    public ActionPart(float start,float end)
     {
-        startTime=start;
-        endTime=end;
+        startTime=start/1000;
+        endTime=end/1000;
         functions = new ArrayList<>();
     }
 
@@ -29,7 +29,7 @@ public class ActionPart {
      * @param output the ControlsOutput that the held functions get applied to
      * @return returns the new ControlsOutput with applied functions
      */
-    public ControlsOutput execute(long delta,ControlsOutput output)
+    public ControlsOutput execute(float delta,ControlsOutput output)
     {
         int functioncount;
         functioncount =  functions.size();
@@ -51,9 +51,25 @@ public class ActionPart {
         return this;
     }
 
+    public ActionPart withSteer(Value steer) {
+        functions.add( (ControlsOutput output)->{
+                    return output.withSteer(steer.val());
+                }
+        );
+        return this;
+    }
+
     public ActionPart withPitch(float pitch) {
         functions.add( (ControlsOutput output)->{
                     return output.withPitch(pitch);
+                }
+        );
+        return this;
+    }
+
+    public ActionPart withPitch(Value pitch) {
+        functions.add( (ControlsOutput output)->{
+                    return output.withPitch(pitch.val());
                 }
         );
         return this;
@@ -67,6 +83,14 @@ public class ActionPart {
         return this;
     }
 
+    public ActionPart withYaw(Value yaw) {
+        functions.add( (ControlsOutput output)->{
+                    return output.withYaw(yaw.val());
+                }
+        );
+        return this;
+    }
+
     public ActionPart withRoll(float roll) {
         functions.add( (ControlsOutput output)->{
                     return output.withRoll(roll);
@@ -75,9 +99,25 @@ public class ActionPart {
         return this;
     }
 
+    public ActionPart withRoll(Value roll) {
+        functions.add( (ControlsOutput output)->{
+                    return output.withRoll(roll.val());
+                }
+        );
+        return this;
+    }
+
     public ActionPart withThrottle(float throttle) {
         functions.add( (ControlsOutput output)->{
                     return output.withThrottle(throttle);
+                }
+        );
+        return this;
+    }
+
+    public ActionPart withThrottle(Value throttle) {
+        functions.add( (ControlsOutput output)->{
+                    return output.withThrottle(throttle.val());
                 }
         );
         return this;
@@ -133,5 +173,11 @@ public class ActionPart {
     public ActionPart withUseItem() {
         this.withUseItem(true);
         return this;
+    }
+
+    public void delay(float time)
+    {
+        startTime += time/1000;
+        endTime += time/1000;
     }
 }
