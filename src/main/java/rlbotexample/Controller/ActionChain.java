@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 public class ActionChain extends AbstractAction{
 
-    ArrayDeque<Action> chain;
-    Action current;
+    ArrayDeque<AbstractAction> chain;
+    AbstractAction current;
 
     public ActionChain(float executionLength, Information information) {
         super(executionLength, information);
@@ -18,8 +18,6 @@ public class ActionChain extends AbstractAction{
 
     @Override
     public ControlsOutput execute(ControlsOutput output) {
-        if(getElapsed() > executionLength)
-            active = false;
         if(active)
         {
             if(current == null || current.isActive() == false)
@@ -40,9 +38,22 @@ public class ActionChain extends AbstractAction{
         return output;
     }
 
-    public ActionChain addAction(Action a)
+    public ActionChain addAction(AbstractAction a)
     {
         chain.add(a);
         return this;
+    }
+
+    @Override
+    public boolean isActive()
+    {
+        if(getElapsed() > executionLength)
+            active = false;
+
+        /*if(chain.size()==0)
+        {
+            active = false;
+        }*/
+        return active;
     }
 }

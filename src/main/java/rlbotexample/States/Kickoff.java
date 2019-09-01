@@ -13,6 +13,7 @@ import rlbotexample.Util;
 import rlbotexample.boost.BoostManager;
 import rlbotexample.boost.BoostPad;
 import rlbotexample.input.Information;
+import rlbotexample.input.Predictions;
 import rlbotexample.vector.Vector3;
 
 import java.awt.*;
@@ -32,6 +33,7 @@ public class Kickoff extends State {
         Ball ball = information.ball;
         target = new Vector3();
         ActionChain a = chain(3500);
+        ActionLibrary actionLibrary = new ActionLibrary(information);
         //AdjustmentSpeed for the dodge before the ball
         //0.7f standard
         float aS = 0.6f;
@@ -72,7 +74,7 @@ public class Kickoff extends State {
                             .addCondition(()->me.location().distance(new Vector3())<distanceToDodge)
                             .add(part(0,1000).withThrottle(1).withSteer(steerToBall).withYaw(steerToBall).withBoost())
             ).addAction(
-                    Action.dodge(300,-lastJumpAngle,false,information)
+                    actionLibrary.dodge(300,-lastJumpAngle,false)
             );
         }else
         if(me.inLocation2D(new Vector3(2048,-2560,0))||me.inLocation2D(new Vector3(-2048,2560,0)))
@@ -101,7 +103,7 @@ public class Kickoff extends State {
                             .addCondition(()->me.location().distance(new Vector3())<distanceToDodge)
                             .add(part(0,1000).withThrottle(1).withSteer(steerToBall).withYaw(steerToBall).withBoost())
             ).addAction(
-                    Action.dodge(300,lastJumpAngle,false,information)
+                    actionLibrary.dodge(300,lastJumpAngle,false)
             );
         }else
         if(me.inLocation2D(new Vector3(-256,-3840,0))||me.inLocation2D(new Vector3(256,3840,0)))
@@ -112,6 +114,28 @@ public class Kickoff extends State {
                 return angle > 0.1 ? aS: angle < -0.1 ? -aS : 0;
             };
 
+            Vector3 nearestCenter = new Vector3(0,me.location().y - 2816 > 0 ? 2816:-2816,70);
+            a = a.addAction(
+                    action(10).addCondition(()->me.transformToLocal(nearestCenter).angle2D()>-0.12)
+                            .add(part(0,1000).withThrottle(1).withBoost().withSteer(-0.5f))
+            ).addAction(
+                    action(10).addCondition(()->Math.abs(me.location().y)<3300)
+                            .add(part(0,1000).withThrottle(1).withBoost())
+            ).addAction(
+                    action(100).add(part(0,50).withThrottle(1).withJump()).add(part(0,1000).withBoost())
+            )
+                    .addAction(
+                            action(50).add(part(0,50).withThrottle(1).withJump().withRoll(1).withPitch(-1).withBoost()))
+                    .addAction(
+                            action(800).add(part(0,700).withThrottle(1).withPitch(1).withBoost()))
+                    .addAction(
+                            action(400)
+                                    .addCondition(()->me.location().distance(new Vector3())<distanceToDodge+350)
+                                    .add(part(0,1000).withThrottle(1).withSteer(steerToBall).withYaw(steerToBall).withBoost())
+                    ).addAction(
+                            actionLibrary.dodge(300,-lastJumpAngle,false)
+                    );
+            /*
             Vector3 nearestCenter = new Vector3(0,me.location().y - 2816 > 0 ? 2816:-2816,70);
             a = a.addAction(
                     action(10).addCondition(()->me.transformToLocal(nearestCenter).angle2D()>-0.03)
@@ -130,7 +154,7 @@ public class Kickoff extends State {
                                     .add(part(0,1000).withThrottle(1).withSteer(steerToBall).withYaw(steerToBall).withBoost())
                     ).addAction(
                             Action.dodge(300,lastJumpAngle,false,information)
-                    );
+                    );*/
         }else
         if(me.inLocation2D(new Vector3(256,-3840,0))||me.inLocation2D(new Vector3(-256,3840,0)))
         {
@@ -140,6 +164,29 @@ public class Kickoff extends State {
                 return angle > 0.1 ? aS: angle < -0.1 ? -aS : 0;
             };
 
+            Vector3 nearestCenter = new Vector3(0,me.location().y - 2816 > 0 ? 2816:-2816,70);
+            a = a.addAction(
+                    action(10).addCondition(()->me.transformToLocal(nearestCenter).angle2D()<0.12)
+                            .add(part(0,1000).withThrottle(1).withBoost().withSteer(0.5f))
+            ).addAction(
+                    action(10).addCondition(()->Math.abs(me.location().y)<3300)
+                            .add(part(0,1000).withThrottle(1).withBoost())
+            ).addAction(
+                    action(100).add(part(0,50).withThrottle(1).withJump()).add(part(0,1000).withBoost())
+            )
+                    .addAction(
+                            action(50).add(part(0,50).withThrottle(1).withJump().withRoll(-1).withPitch(-1).withBoost()))
+                    .addAction(
+                            action(800).add(part(0,700).withThrottle(1).withPitch(1).withBoost()))
+                    .addAction(
+                            action(400)
+                                    .addCondition(()->me.location().distance(new Vector3())<distanceToDodge+350)
+                                    .add(part(0,1000).withThrottle(1).withSteer(steerToBall).withYaw(steerToBall).withBoost())
+                    ).addAction(
+                            actionLibrary.dodge(300,-lastJumpAngle,false)
+                    );
+
+            /*
             Vector3 nearestCenter = new Vector3(0,me.location().y - 2816 > 0 ? 2816:-2816,70);
             a = a.addAction(
                     action(10).addCondition(()->me.transformToLocal(nearestCenter).angle2D()<0.03)
@@ -158,7 +205,7 @@ public class Kickoff extends State {
                                     .add(part(0,1000).withThrottle(1).withSteer(steerToBall).withYaw(steerToBall).withBoost())
                     ).addAction(
                             Action.dodge(300,-lastJumpAngle,false,information)
-                    );
+                    );*/
         }else
         if(me.inLocation2D(new Vector3(0,-4608,0))||me.inLocation2D(new Vector3(0,4608,0)))
         {
@@ -171,15 +218,17 @@ public class Kickoff extends State {
                     action(10).addCondition(()->Math.abs(me.location().y)<3500)
                             .add(part(0,1000).withThrottle(1).withBoost())
             ).addAction(
-                Action.dodge(700,0,false,information).add(part(0,100).withBoost())
+                actionLibrary.dodge(700,0,false).add(part(0,100).withBoost())
             ).addAction(
                     action(400)
                             .addCondition(()->me.location().distance(new Vector3())<distanceToDodge+40)
                             .add(part(0,1000).withThrottle(1).withSteer(steerToBall).withYaw(steerToBall).withBoost())
             ).addAction(
-                    Action.dodge(300,0,false,information)
+                    actionLibrary.dodge(300,0,false)
             );
         }
+
+        a.addAction(actionLibrary.flatToSurface());
         return a;
 
 

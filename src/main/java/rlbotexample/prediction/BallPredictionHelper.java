@@ -1,9 +1,13 @@
 
 package rlbotexample.prediction;
 
+import rlbot.cppinterop.RLBotDll;
+import rlbot.cppinterop.RLBotInterfaceException;
 import rlbot.flat.BallPrediction;
 import rlbot.flat.PredictionSlice;
 import rlbot.render.Renderer;
+import rlbotexample.Util;
+import rlbotexample.input.Information;
 import rlbotexample.vector.Vector3;
 
 import java.awt.*;
@@ -28,4 +32,53 @@ public class BallPredictionHelper {
             previousLocation = location;
         }
     }
+
+    public static Vector3 predict(float gameSeconds, Information info) {
+        gameSeconds = info.secondsElapsed() + gameSeconds/1000;
+        try {
+            BallPrediction ballPrediction = RLBotDll.getBallPrediction();
+            Vector3 previousLocation = null;
+            for (int i = 0; i < ballPrediction.slicesLength(); i += 4) {
+                PredictionSlice slice = ballPrediction.slices(i);
+                if (slice.gameSeconds() > gameSeconds) {
+                    break;
+                }
+                Vector3 location = new Vector3(slice.physics().location());
+                previousLocation = location;
+            }
+            if(previousLocation != null)
+                return previousLocation;
+            return new Vector3(0,0,0);
+        }catch(RLBotInterfaceException e)
+        {
+            e.printStackTrace();
+        }
+        return new Vector3(0,0,0);
+    }
+
+    public static Vector3 predictFirstTouch(Information info) {
+        float gameSeconds = (float)Util.timeZ(info.ball);
+        gameSeconds = info.secondsElapsed() + gameSeconds;
+        try {
+            BallPrediction ballPrediction = RLBotDll.getBallPrediction();
+            Vector3 previousLocation = null;
+            for (int i = 0; i < ballPrediction.slicesLength(); i += 4) {
+                PredictionSlice slice = ballPrediction.slices(i);
+                if (slice.gameSeconds() > gameSeconds) {
+                    break;
+                }
+                Vector3 location = new Vector3(slice.physics().location());
+                previousLocation = location;
+            }
+            if(previousLocation != null)
+                return new Vector3(previousLocation.x,previousLocation.y,0);
+            return new Vector3(0,0,0);
+        }catch(RLBotInterfaceException e)
+        {
+            e.printStackTrace();
+        }
+        return new Vector3(0,0,0);
+    }
+
+
 }

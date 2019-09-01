@@ -5,6 +5,7 @@ import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
 import rlbotexample.Controller.AbstractAction;
 import rlbotexample.Controller.Action;
+import rlbotexample.Controller.ActionLibrary;
 import rlbotexample.Controller.ActionPart;
 import rlbotexample.Objects.Goal;
 import rlbotexample.Util;
@@ -94,12 +95,12 @@ public class CalcShot extends State {
         Vector3 targetLocal = information.me.transformToLocal(targetLocation);
         double angletotarget = targetLocal.angle2D();
         double distancetotarget = information.me.location().flatten().distance(targetLocation.flatten());
-        double targetspeed = 2000 - (100*(1+angletotarget)*(1+angletotarget));
+        double targetspeed = 1400 - (100*(1+angletotarget)*(1+angletotarget))+distancetotarget/4;
 
 
 
 
-        Action a = new Action(0,information);
+        /*Action a = new Action(0,information);
         double currentspeed = information.me.velocity().flatten().magnitude();
         a.add(new ActionPart(0,100).withSteer((float)Util.steer(angletotarget)));
 
@@ -114,7 +115,9 @@ public class CalcShot extends State {
         {
             a.add(new ActionPart(0,100).withThrottle(-1));
         }
-        return a;
+        return a;*/
+        ActionLibrary actionLibrary = new ActionLibrary(information);
+        return actionLibrary.driveTowards(targetLocation,(float)targetspeed,false);
     }
 
     @Override
@@ -126,6 +129,9 @@ public class CalcShot extends State {
 
     @Override
     public boolean isAvailable() {
+        if(information.me.location().y*Util.sign(information.me.team().ordinal()) <0)
+        if(information.me.location().distance(information.ball.location())<270)
+            return false;
         if(Util.ballReady(information) && Math.abs(information.ball.location().y) <5050 && Util.ballProject(information) > 500-(information.ball.location().flatten().distance(information.me.location().flatten())))
             return true;
         return false;

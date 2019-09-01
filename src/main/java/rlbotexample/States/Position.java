@@ -5,6 +5,7 @@ import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
 import rlbotexample.Controller.AbstractAction;
 import rlbotexample.Controller.Action;
+import rlbotexample.Controller.ActionLibrary;
 import rlbotexample.Controller.ActionPart;
 import rlbotexample.Objects.Ball;
 import rlbotexample.Objects.GameCar;
@@ -33,6 +34,7 @@ public Position(Information information) {
     double angletotarget;
     @Override
     public AbstractAction getAction() {
+        ActionLibrary actionLibrary = new ActionLibrary(information);
         //Calculating Data
         leftPost = information.eneGoal.leftPost();
         rightPost = information.eneGoal.rightPost();
@@ -50,13 +52,14 @@ public Position(Information information) {
         angletotarget = localTarget.angle2D();
         double distancetotarget = target.distance(information.me.location());
         double speedcorrection = ((1+angletotarget*angletotarget)*300);
-        double targetspeed = 2000- speedcorrection + Util.cap((distancetotarget/16)*(distancetotarget/16),0,speedcorrection);
+        double targetspeed = 2300- speedcorrection + Util.cap((distancetotarget/16)*(distancetotarget/16),0,speedcorrection);
 
         //Calculating Action
         double currentspeed = information.me.velocity().flatten().magnitude();
         Action a = new Action(0,information);
         a.add(new ActionPart(0,100).withSteer((float)Util.steer(angletotarget)));
-        if(targetspeed > 1400 && targetspeed > currentspeed && starttime > 2500 && currentspeed < 2250)
+        a.add(part(0,10000).withBoost(()-> Math.abs(angletotarget)>Math.PI/2).withSlide(()-> Math.abs(angletotarget)>Math.PI/2));
+        if(targetspeed > 1400 && targetspeed > currentspeed && starttime > 2500 && currentspeed < 2250|| distancetotarget > 2000 && information.me.boost() > 20)
         {
             a.add(new ActionPart(0,100).withBoost());
         }
@@ -72,7 +75,8 @@ public Position(Information information) {
         if(Util.ballReady(information) && delta > 2200 && distancetotarget < 270)
         {
             this.start();
-            return Action.dodge(100,angletotarget,true,information);
+            float angle = -information.me.transformToLocal(information.ball.location()).angle2D();
+            return actionLibrary.dodge(100,angle,false);
         }
         return a;
     /*    Ball ball = information.ball;

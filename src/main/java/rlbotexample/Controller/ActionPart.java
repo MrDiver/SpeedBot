@@ -131,9 +131,25 @@ public class ActionPart {
         return this;
     }
 
+    public ActionPart withJump(Bool jumpDepressed) {
+        functions.add( (ControlsOutput output)->{
+                    return output.withJump(jumpDepressed.val());
+                }
+        );
+        return this;
+    }
+
     public ActionPart withBoost(boolean boostDepressed) {
         functions.add( (ControlsOutput output)->{
                     return output.withBoost(boostDepressed);
+                }
+        );
+        return this;
+    }
+
+    public ActionPart withBoost(Bool boostDepressed) {
+        functions.add( (ControlsOutput output)->{
+                    return output.withBoost(boostDepressed.val());
                 }
         );
         return this;
@@ -147,9 +163,25 @@ public class ActionPart {
         return this;
     }
 
+    public ActionPart withSlide(Bool slideDepressed) {
+        functions.add( (ControlsOutput output)->{
+                    return output.withSlide(slideDepressed.val());
+                }
+        );
+        return this;
+    }
+
     public ActionPart withUseItem(boolean useItemDepressed) {
         functions.add( (ControlsOutput output)->{
                     return output.withUseItem(useItemDepressed);
+                }
+        );
+        return this;
+    }
+
+    public ActionPart withUseItem(Bool useItemDepressed) {
+        functions.add( (ControlsOutput output)->{
+                    return output.withUseItem(useItemDepressed.val());
                 }
         );
         return this;

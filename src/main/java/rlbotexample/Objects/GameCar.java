@@ -1,6 +1,7 @@
 package rlbotexample.Objects;
 
 import rlbot.flat.PlayerInfo;
+import rlbot.flat.Rotator;
 import rlbot.flat.ScoreInfo;
 import rlbotexample.input.Team;
 import rlbotexample.vector.Vector3;
@@ -62,5 +63,14 @@ public class GameCar extends GenericObject{
         return p.scoreInfo();
     }
 
+    public Rotator getRotator()
+    {
+        return p.physics().rotation();
+    }
+
+    public float speed()
+    {
+        return (float)new Vector3(p.physics().velocity()).magnitude();
+    }
 
 }

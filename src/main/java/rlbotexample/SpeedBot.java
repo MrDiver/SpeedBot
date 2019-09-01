@@ -29,9 +29,10 @@ public class SpeedBot implements Bot {
         states = new ArrayList<>();
         states.add(new Position(information));
         states.add(new CalcShot(information));
-        //states.add(new Wait(information));
+        states.add(new Wait(information));
         //states.add(new TestActions(information));
         states.add(new Kickoff(information));
+        states.add(new AfterKickoff(information));
     }
 
     /**

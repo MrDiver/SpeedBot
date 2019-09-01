@@ -22,6 +22,8 @@ public class Information {
     public Goal ownGoal;
     public Goal eneGoal;
 
+    private float kickoffLast;
+
     public Information(int playerIndex)
     {
         this.playerIndex = playerIndex;
@@ -64,6 +66,7 @@ public class Information {
            cars.get(i).update(game.players(i));
         }
         ball.update(game.ball());
+        kickoffLast = isKickoffPause()?this.secondsElapsed():kickoffLast;
     }
 
     public float gameSpeed()
@@ -84,6 +87,15 @@ public class Information {
     public boolean isKickoffPause()
     {
         return gameInfo.isKickoffPause();
+    }
+    public boolean isAfterKickoff()
+    {
+        return this.secondsElapsed()-kickoffLast<5;
+    }
+
+    public float timeAfterKickoff()
+    {
+        return this.secondsElapsed()-kickoffLast;
     }
 
     public boolean isMatchEnded()
