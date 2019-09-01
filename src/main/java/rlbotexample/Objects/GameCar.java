@@ -3,6 +3,7 @@ package rlbotexample.Objects;
 import rlbot.flat.PlayerInfo;
 import rlbot.flat.Rotator;
 import rlbot.flat.ScoreInfo;
+import rlbotexample.Util;
 import rlbotexample.input.Team;
 import rlbotexample.vector.Vector3;
 
@@ -51,6 +52,11 @@ public class GameCar extends GenericObject{
     public Team team()
     {
         return Team.values()[p.team()];
+    }
+
+    public int teamSign()
+    {
+        return Util.sign(Team.values()[p.team()].ordinal());
     }
 
     public String name()

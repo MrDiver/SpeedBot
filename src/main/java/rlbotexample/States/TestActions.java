@@ -5,13 +5,15 @@ import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
 import rlbotexample.Controller.*;
 import rlbotexample.input.Information;
+import rlbotexample.input.Predictions;
 import rlbotexample.vector.Vector3;
 
 import java.awt.*;
 
 public class TestActions extends State {
-    public TestActions(Information information) {
-        super(information);
+
+    public TestActions(Information information, ActionLibrary actionLibrary, Predictions predictions) {
+        super(information, actionLibrary, predictions);
     }
 
     @Override

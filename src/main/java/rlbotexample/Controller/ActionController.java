@@ -30,13 +30,6 @@ public class ActionController {
     {
         current = new Action(0,information);
         this.information = information;
-        /*gameState = new GameState()
-            .withCarState(information.playerIndex, new CarState()
-                    .withPhysics(new PhysicsState()
-                            .withVelocity(new DesiredVector3().withZ(0F).withX(0F).withY(0F))
-                            .withRotation(new DesiredRotation((float) 0F, 300F, 0F))
-                            .withLocation(new DesiredVector3().withX(0f).withY(5000f).withZ(15f))))
-            .withBallState(new BallState().withPhysics(new PhysicsState().withLocation(new DesiredVector3(null, null, 500F))));*/
     }
 
     /**
@@ -54,29 +47,12 @@ public class ActionController {
 
     public ControlsOutput execute(ControlsOutput output,State state)
     {
-        if(state != last || current.isActive()==false)
+        if(current.isActive()==false || state != last)
         {
-            /*if(a > 5&& state.getClass() == TestActions.class) {
-
-                RLBotDll.setGameState(gameState.buildPacket());
-                a = 0;
-                testtime = information.secondsElapsed();
-            }
-            a++;*/
-
-
             current = state.getAction();
             current.start();
             wheelContact = information.me.hasWheelContact();
         }
-        /*if(information.me.location().y<-5000)
-        {
-            System.out.println(information.secondsElapsed()-testtime);
-            RLBotDll.setGameState(gameState.buildPacket());
-            testtime = information.secondsElapsed();
-            state.start();
-            a = 0;
-        }*/
         output = current.execute(output);
         o=output;
         last = state;

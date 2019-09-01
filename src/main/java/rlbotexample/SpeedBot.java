@@ -4,11 +4,18 @@ import rlbot.Bot;
 import rlbot.ControllerState;
 import rlbot.flat.GameTickPacket;
 import rlbotexample.Controller.ActionController;
+import rlbotexample.Controller.ActionLibrary;
 import rlbotexample.Objects.BoostPadManager;
 import rlbotexample.States.*;
+import rlbotexample.States.Defense.*;
+import rlbotexample.States.OffenseAir.TryAerial;
+import rlbotexample.States.OffenseGround.Dribble;
+import rlbotexample.States.OffenseGround.Reposition;
+import rlbotexample.States.OffenseGround.TakeShot;
 import rlbotexample.boost.BoostManager;
 import rlbotexample.dropshot.DropshotTileManager;
 import rlbotexample.input.Information;
+import rlbotexample.input.Predictions;
 import rlbotexample.output.ControlsOutput;
 
 import java.util.ArrayList;
@@ -20,19 +27,27 @@ public class SpeedBot implements Bot {
     State state;
     private ArrayList<State>states;
     Information information;
+    Predictions predictions;
     public SpeedBot(int playerIndex)
     {
         this.playerIndex = playerIndex;
         information = new Information(playerIndex);
         actionController = new ActionController(information);
-        state = new Position(information);
+        predictions = new Predictions(information);
+        ActionLibrary a = new ActionLibrary(information);
+        state = new Kickoff(information,a,predictions);
         states = new ArrayList<>();
-        states.add(new Position(information));
-        states.add(new CalcShot(information));
-        states.add(new Wait(information));
-        //states.add(new TestActions(information));
-        states.add(new Kickoff(information));
-        states.add(new AfterKickoff(information));
+        states.add(new Kickoff(information,a,predictions));
+        states.add(new AfterKickoff(information,a,predictions));
+        states.add(new BallToOwnside(information,a,predictions));
+        states.add(new MakeSave(information,a,predictions));
+        states.add(new Retreat(information,a,predictions));
+        states.add(new TryAerial(information,a,predictions));
+        states.add(new Dribble(information,a,predictions));
+        states.add(new Reposition(information,a,predictions));
+        states.add(new TakeShot(information,a,predictions));
+        states.add(new GetBoost(information,a,predictions));
+        states.add(new Shadowing(information,a,predictions));
     }
 
     /**

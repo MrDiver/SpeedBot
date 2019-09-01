@@ -88,9 +88,10 @@ public class Information {
     {
         return gameInfo.isKickoffPause();
     }
+
     public boolean isAfterKickoff()
     {
-        return this.secondsElapsed()-kickoffLast<5;
+        return this.secondsElapsed()-kickoffLast<3;
     }
 
     public float timeAfterKickoff()
@@ -116,5 +117,31 @@ public class Information {
     public boolean isUnlimitedTime()
     {
         return gameInfo.isUnlimitedTime();
+    }
+
+    public ArrayList<GameCar> enemyList()
+    {
+        ArrayList<GameCar> enemies = new ArrayList<>();
+        for(GameCar p:cars)
+        {
+            if(p.team()!=me.team())
+            {
+                enemies.add(p);
+            }
+        }
+        return enemies;
+    }
+
+    public ArrayList<GameCar> alliesList()
+    {
+        ArrayList<GameCar> allies = new ArrayList<>();
+        for(GameCar p:cars)
+        {
+            if(p.team()==me.team())
+            {
+                allies.add(p);
+            }
+        }
+        return allies;
     }
 }

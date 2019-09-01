@@ -111,8 +111,18 @@ public class ActionLibrary {
     public ActionChain diagonalFlick(float angle,boolean boost)
     {
         ActionChain c = chain(2000)
-                .addAction(action(500).add(part(0,500).withThrottle(1)).addCondition(()->information.me.velocity().magnitude()>500))
+                /*.addAction(action(500).add(part(0,500).withThrottle(1)).addCondition(()->information.me.velocity().magnitude()>500))*/
                 .addAction(action((2300-information.me.velocity().y)/90+70).add(part(0,500).withThrottle(1).withSteer(-angle)))
+                .addAction(action(150).add(part(0,100).withThrottle(1).withPitch(1).withJump()).add(part(0,150).withBoost(boost)))
+                .addAction(action(25).add(part(0,50).withThrottle(1).withPitch(-1).withRoll(angle).withJump().withBoost(boost)))
+                .addAction(action(800).add(part(0,1000).withThrottle(1).withPitch(1).withBoost(boost).withRoll(angle).withYaw(angle)));
+
+        return c;
+    }
+
+    public ActionChain diagonalFlickNoCorrection(float angle,boolean boost)
+    {
+        ActionChain c = chain(2000)
                 .addAction(action(150).add(part(0,100).withThrottle(1).withPitch(1).withJump()).add(part(0,150).withBoost(boost)))
                 .addAction(action(25).add(part(0,50).withThrottle(1).withPitch(-1).withRoll(angle).withJump().withBoost(boost)))
                 .addAction(action(800).add(part(0,1000).withThrottle(1).withPitch(1).withBoost(boost).withRoll(angle).withYaw(angle)));
@@ -171,6 +181,24 @@ public class ActionLibrary {
                     chain.addAction(actionLibrary.diagonalFlick(angleHard.val(),true));
                 chain.addAction(a);
 
+        return chain;
+    }
+
+    public ActionChain boostTowards(Vector3 loc,float speed,boolean tillLocation)
+    {
+        GameCar me = information.me;
+        Value angle = ()->(float)Util.cap(information.me.transformToLocal(loc).angle2D(),-1,1);
+        Value angleHard = ()->angle.val()<-0.1f?-1: angle.val() > 0.1f ? 1: angle.val()*2;
+        Bool boost = () ->me.speed() < 2250;
+        ActionLibrary actionLibrary = new ActionLibrary(information);
+
+        Action a = action(100)
+                .add(part(0,200000).withThrottle(1).withSteer(angleHard).withBoost(boost));
+
+        if(tillLocation)
+            a.addCondition(()->me.location().distance(loc)<50);
+
+        ActionChain chain = chain(100).addAction(a);
         return chain;
     }
 

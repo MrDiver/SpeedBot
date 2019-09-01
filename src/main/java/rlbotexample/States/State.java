@@ -1,21 +1,23 @@
 package rlbotexample.States;
 
 import rlbot.Bot;
-import rlbotexample.Controller.AbstractAction;
-import rlbotexample.Controller.Action;
-import rlbotexample.Controller.ActionChain;
-import rlbotexample.Controller.ActionPart;
+import rlbotexample.Controller.*;
 import rlbotexample.input.Information;
+import rlbotexample.input.Predictions;
 
 import javax.sound.sampled.Line;
 
 public abstract class State {
 
     Information information;
+    protected ActionLibrary actionLibrary;
+    protected Predictions predictions;
     float starttime;
-    public State(Information information)
+    public State(Information information,ActionLibrary actionLibrary, Predictions predictions)
     {
         this.information = information;
+        this.actionLibrary = actionLibrary;
+        this.predictions = predictions;
     }
     /**
      * Returns the state that should be executed

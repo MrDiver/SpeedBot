@@ -18,8 +18,7 @@ public class ActionChain extends AbstractAction{
 
     @Override
     public ControlsOutput execute(ControlsOutput output) {
-        if(active)
-        {
+
             if(current == null || current.isActive() == false)
             {
                 if(chain.size()>0) {
@@ -29,12 +28,12 @@ public class ActionChain extends AbstractAction{
                 {
                     active = false;
                 }
-            }else
+            }
             if(current.isActive())
             {
                 current.execute(output);
             }
-        }
+
         return output;
     }
 
