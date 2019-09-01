@@ -59,6 +59,7 @@ public class SpeedBot implements Bot {
         state = choosState();
         if(information.isRoundActive())
             output = actionController.execute(output,state);
+        predictions.draw(this);
         actionController.draw(this);
         state.draw(this);
         return output;
@@ -100,7 +101,7 @@ public class SpeedBot implements Bot {
         // Update the boost manager and tile manager with the latest data
         BoostManager.loadGameTickPacket(packet);
         BoostPadManager.loadGameTickPacket(packet);
-        DropshotTileManager.loadGameTickPacket(packet);
+        //DropshotTileManager.loadGameTickPacket(packet);
         information.loadGameTickPacket(packet);
 
         ControlsOutput controlsOutput = processInput();

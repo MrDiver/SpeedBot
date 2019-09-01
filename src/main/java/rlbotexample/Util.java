@@ -167,7 +167,7 @@ public class Util {
         return quad(-325,ball.velocity().z*rate,ball.location().z-92.75);
     }
 
-    public  static double quad(double a, double b, double c) {
+    public static double quad(double a, double b, double c) {
         double inside = b*b - 4*a*c;
         if (inside < 0 || a==0)
         {

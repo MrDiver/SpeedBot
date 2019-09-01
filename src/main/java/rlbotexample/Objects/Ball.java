@@ -5,6 +5,7 @@ import rlbotexample.vector.Vector3;
 
 public class Ball extends GenericObject{
     BallInfo b;
+
     public void update(BallInfo b)
     {
         this.b = b;

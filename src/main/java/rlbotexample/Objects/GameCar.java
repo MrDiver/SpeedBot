@@ -9,6 +9,7 @@ import rlbotexample.vector.Vector3;
 
 public class GameCar extends GenericObject{
     PlayerInfo p;
+
     public void update(PlayerInfo p)
     {
         this.p = p;

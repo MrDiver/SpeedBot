@@ -6,6 +6,8 @@ import rlbot.cppinterop.RLBotInterfaceException;
 import rlbot.flat.BallPrediction;
 import rlbot.flat.PredictionSlice;
 import rlbot.render.Renderer;
+import rlbotexample.Objects.Impact;
+import rlbotexample.Objects.Zone;
 import rlbotexample.Util;
 import rlbotexample.input.Information;
 import rlbotexample.vector.Vector3;
@@ -20,7 +22,7 @@ public class BallPredictionHelper {
 
     public static void drawTillMoment(BallPrediction ballPrediction, float gameSeconds, Color color, Renderer renderer) {
         Vector3 previousLocation = null;
-        for (int i = 0; i < ballPrediction.slicesLength(); i += 4) {
+        for (int i = 0; i < ballPrediction.slicesLength(); i += 8) {
             PredictionSlice slice = ballPrediction.slices(i);
             if (slice.gameSeconds() > gameSeconds) {
                 break;
@@ -41,14 +43,9 @@ public class BallPredictionHelper {
             for (int i = 0; i < ballPrediction.slicesLength(); i += 4) {
                 PredictionSlice slice = ballPrediction.slices(i);
                 if (slice.gameSeconds() > gameSeconds) {
-                    break;
+                    return new Vector3(slice.physics().location());
                 }
-                Vector3 location = new Vector3(slice.physics().location());
-                previousLocation = location;
             }
-            if(previousLocation != null)
-                return previousLocation;
-            return new Vector3(0,0,0);
         }catch(RLBotInterfaceException e)
         {
             e.printStackTrace();
@@ -56,8 +53,45 @@ public class BallPredictionHelper {
         return new Vector3(0,0,0);
     }
 
+    public static Impact reachingZone(float gameSeconds, Zone zone, Information info) {
+        gameSeconds = info.secondsElapsed() + gameSeconds/1000;
+        try {
+            BallPrediction ballPrediction = RLBotDll.getBallPrediction();
+            for (int i = 0; i < ballPrediction.slicesLength(); i += 1) {
+                PredictionSlice slice = ballPrediction.slices(i);
+                Vector3 pos = new Vector3(slice.physics().location());
+
+                //if(i%10==0)
+                //renderer.drawRectangle3d(Color.yellow,pos,10,10,true);
+                if(zone.inSide(pos))
+                {
+                    return new Impact(pos,slice.gameSeconds()-info.secondsElapsed(),true);
+                }
+            }
+        }catch(RLBotInterfaceException e)
+        {
+            e.printStackTrace();
+        }
+        return new Impact(new Vector3(),0,false);
+    }
+
     public static Vector3 predictFirstTouch(Information info) {
-        float gameSeconds = (float)Util.timeZ(info.ball);
+        try {
+            BallPrediction ballPrediction = RLBotDll.getBallPrediction();
+            for (int i = 0; i < ballPrediction.slicesLength(); i += 1) {
+                PredictionSlice slice = ballPrediction.slices(i);
+                Vector3 location = new Vector3(slice.physics().location());
+                if(location.z < 100)
+                {
+                    return location;
+                }
+            }
+        }catch(RLBotInterfaceException e)
+        {
+            e.printStackTrace();
+        }
+        return new Vector3(0,0,0);
+        /*float gameSeconds = (float)Util.timeZ(info.ball);
         gameSeconds = info.secondsElapsed() + gameSeconds;
         try {
             BallPrediction ballPrediction = RLBotDll.getBallPrediction();
@@ -77,7 +111,7 @@ public class BallPredictionHelper {
         {
             e.printStackTrace();
         }
-        return new Vector3(0,0,0);
+        return new Vector3(0,0,0);*/
     }
 
 

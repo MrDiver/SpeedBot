@@ -1,29 +1,35 @@
 package rlbotexample.input;
 
+import rlbot.Bot;
+import rlbot.cppinterop.RLBotDll;
+import rlbot.cppinterop.RLBotInterfaceException;
+import rlbot.manager.BotLoopRenderer;
+import rlbot.render.Renderer;
 import rlbotexample.Objects.Ball;
 import rlbotexample.Objects.GameCar;
+import rlbotexample.Objects.Impact;
+import rlbotexample.Objects.Zone;
 import rlbotexample.Util;
 import rlbotexample.prediction.BallPredictionHelper;
 import rlbotexample.vector.Vector3;
 
+import java.awt.*;
+
 public class Predictions {
 
     Information info;
-    GameCar me;
-    Ball ball;
+    Zone ownGoalZone;
     public Predictions(Information information)
     {
-        info = information;
-        me = info.me;
-        ball = info.ball;
+        this.info = information;
     }
     //Acceleration Constants
-    final static float boostConsumptionRate = 33.3f;
-    final static float gravity = 650;
-    final static float boostAcceleration = 991.666f;
-    final static float normalAcceleration = 525;
-    final static float breakingDeceleration = -3500;
-    final static float decelerationNormal=-525;
+    final float boostConsumptionRate = 33.3f;
+    final float gravity = 650;
+    final float boostAcceleration = 991.666f;
+    final float normalAcceleration = 525;
+    final float breakingDeceleration = -3500;
+    final float decelerationNormal=-525;
 
 
     /**
@@ -86,18 +92,55 @@ public class Predictions {
 
     public float ballTimeTillTouchGround()
     {
-        return (float)Util.timeZ(ball);
+        float time = (float)Util.timeZ(info.ball);
+        return time < 0.1f ? 0 : time;
+    }
+
+    public boolean ballOnGround()
+    {
+        return info.ball.location().z < 95;
     }
 
     public boolean possession()
     {
         for(GameCar car : info.cars) {
-            if(me.location().distance(ball.location()) > car.location().distance(ball.location()))
+            if(info.me.location().distance(info.ball.location()) > car.location().distance(info.ball.location()))
             {
                 return  false;
             }
         }
         return true;
+    }
+
+    public boolean wrongSide()
+    {
+        return (info.ball.location().y - info.me.location().y)*info.me.teamSign() > 0;
+    }
+
+    public void draw(Bot bot)
+    {
+        Renderer r = BotLoopRenderer.forBotLoop(bot);
+        int offsetx = 10;
+        int offsety = 300;
+        r.drawRectangle2d(Color.white,new Point(offsetx-5,offsety-5),300,200,true);
+        r.drawString2d("BallTime: "+ballTimeTillTouchGround(), Color.red,new Point(offsetx,offsety+20),1,1);
+        r.drawString2d("BallOnGround: "+ballOnGround(), Color.red,new Point(offsetx,offsety+40),1,1);
+        r.drawString2d("Possession: "+possession(), Color.red,new Point(offsetx,offsety+60),1,1);
+        r.drawString2d("WrongSide: "+wrongSide(), Color.red,new Point(offsetx,offsety+80),1,1);
+        ballFutureTouch().draw(Color.cyan,bot);
+        ownGoalZone = new Zone(info.ownGoal.location(),1786,642,200);
+        Impact impact = BallPredictionHelper.reachingZone(20,ownGoalZone,info);
+        ownGoalZone.draw(bot,impact.isImpacting() ? Color.red : Color.green);
+        impact.draw(Color.red,r);
+        r.drawString2d("Reaching Owngoal: "+impact.isImpacting(), Color.red,new Point(offsetx,offsety+100),1,1);
+
+
+        try {
+            BallPredictionHelper.drawTillMoment(RLBotDll.getBallPrediction(), info.secondsElapsed() + 5, Color.cyan, r);
+        }catch(RLBotInterfaceException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 }
