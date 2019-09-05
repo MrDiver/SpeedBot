@@ -12,6 +12,7 @@ public class Dribble extends State {
 
     public Dribble(Information information, ActionLibrary actionLibrary, Predictions predictions) {
         super(information, actionLibrary, predictions);
+        name ="Dribble";
     }
 
     @Override

@@ -11,6 +11,7 @@ public class TryAerial extends State {
 
     public TryAerial(Information information, ActionLibrary actionLibrary, Predictions predictions) {
         super(information, actionLibrary, predictions);
+        name = "TryAerial";
     }
 
     @Override

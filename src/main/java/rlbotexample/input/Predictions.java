@@ -5,10 +5,7 @@ import rlbot.cppinterop.RLBotDll;
 import rlbot.cppinterop.RLBotInterfaceException;
 import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
-import rlbotexample.Objects.Ball;
-import rlbotexample.Objects.GameCar;
-import rlbotexample.Objects.Impact;
-import rlbotexample.Objects.Zone;
+import rlbotexample.Objects.*;
 import rlbotexample.Util;
 import rlbotexample.prediction.BallPredictionHelper;
 import rlbotexample.vector.Vector3;
@@ -117,11 +114,46 @@ public class Predictions {
         return (info.ball.location().y - info.me.location().y)*info.me.teamSign() > 0;
     }
 
+    public Vector3 nearestBoostSmall()
+    {
+        return BoostPadManager.getNearestSmall(info.me).getLocation();
+    }
+
+    /**
+     * Searching for a small boostpad on a path from the nose vector
+     * @return
+     */
+    public Vector3 nearestBoostSmallInRange()
+    {
+        Vector3 loc =  BoostPadManager.getNearestSmall(info.me.location()).getLocation();
+        float distance = info.me.location().distance(loc);
+        float angle = Math.abs(info.me.transformToLocal(loc).angle2D());
+        System.out.println("ORG: " + angle);
+        for(int i = 0; i < 2500; i+=100)
+        {
+            Vector3 tmp = BoostPadManager.getNearestSmall(info.me.location().plus(info.me.velocity().scaledToMagnitude(i))).getLocation();
+            float tmpdist = info.me.location().distance(tmp);
+            float tmpangle = Math.abs(info.me.transformToLocal(tmp).angle2D());
+            System.out.println("test: "+ i +" : "+ tmpangle);
+            if(tmpdist < distance || tmpangle < angle) {
+                distance = tmpdist;
+                loc = tmp;
+                angle = tmpangle;
+            }
+        }
+        return loc;
+    }
+
+    public Vector3 nearestBoostFull()
+    {
+        return BoostPadManager.getNearestFull(info.me).getLocation();
+    }
+
     public void draw(Bot bot)
     {
         Renderer r = BotLoopRenderer.forBotLoop(bot);
-        int offsetx = 10;
-        int offsety = 300;
+        int offsetx = 1600;
+        int offsety = 500;
         r.drawRectangle2d(Color.white,new Point(offsetx-5,offsety-5),300,200,true);
         r.drawString2d("BallTime: "+ballTimeTillTouchGround(), Color.red,new Point(offsetx,offsety+20),1,1);
         r.drawString2d("BallOnGround: "+ballOnGround(), Color.red,new Point(offsetx,offsety+40),1,1);
@@ -133,10 +165,10 @@ public class Predictions {
         ownGoalZone.draw(bot,impact.isImpacting() ? Color.red : Color.green);
         impact.draw(Color.red,r);
         r.drawString2d("Reaching Owngoal: "+impact.isImpacting(), Color.red,new Point(offsetx,offsety+100),1,1);
-
-
+        nearestBoostSmallInRange().draw(Color.yellow,bot);
+        //info.me.location().plus(info.me.velocity()).draw(Color.yellow,bot);
         try {
-            BallPredictionHelper.drawTillMoment(RLBotDll.getBallPrediction(), info.secondsElapsed() + 5, Color.cyan, r);
+            BallPredictionHelper.drawTillMoment(RLBotDll.getBallPrediction(), info.secondsElapsed() + 3, Color.cyan, r);
         }catch(RLBotInterfaceException e)
         {
             e.printStackTrace();

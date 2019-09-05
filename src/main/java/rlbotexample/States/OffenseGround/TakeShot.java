@@ -12,6 +12,7 @@ public class TakeShot extends State {
 
     public TakeShot(Information information, ActionLibrary actionLibrary, Predictions predictions) {
         super(information, actionLibrary, predictions);
+        name = "TakeShort";
     }
 
     @Override

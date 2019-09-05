@@ -12,6 +12,7 @@ public class BallToOwnside extends State {
 
     public BallToOwnside(Information information, ActionLibrary actionLibrary, Predictions predictions) {
         super(information, actionLibrary, predictions);
+        name = "BallToOwnside";
     }
 
     @Override

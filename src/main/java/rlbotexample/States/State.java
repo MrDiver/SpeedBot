@@ -9,7 +9,8 @@ import javax.sound.sampled.Line;
 
 public abstract class State {
 
-    Information information;
+    public String name = "Generic";
+    protected Information information;
     protected ActionLibrary actionLibrary;
     protected Predictions predictions;
     float starttime;

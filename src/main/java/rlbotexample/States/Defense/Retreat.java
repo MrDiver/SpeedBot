@@ -12,6 +12,7 @@ public class Retreat extends State {
 
     public Retreat(Information information, ActionLibrary actionLibrary, Predictions predictions) {
         super(information, actionLibrary, predictions);
+        name = "Retreat";
     }
 
     @Override

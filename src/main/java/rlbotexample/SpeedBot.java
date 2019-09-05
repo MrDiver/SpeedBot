@@ -3,6 +3,8 @@ package rlbotexample;
 import rlbot.Bot;
 import rlbot.ControllerState;
 import rlbot.flat.GameTickPacket;
+import rlbot.manager.BotLoopRenderer;
+import rlbot.render.Renderer;
 import rlbotexample.Controller.ActionController;
 import rlbotexample.Controller.ActionLibrary;
 import rlbotexample.Objects.BoostPadManager;
@@ -18,6 +20,7 @@ import rlbotexample.input.Information;
 import rlbotexample.input.Predictions;
 import rlbotexample.output.ControlsOutput;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class SpeedBot implements Bot {
@@ -60,9 +63,24 @@ public class SpeedBot implements Bot {
         if(information.isRoundActive())
             output = actionController.execute(output,state);
         predictions.draw(this);
-        actionController.draw(this);
-        state.draw(this);
+        //actionController.draw(this);
+        //state.draw(this);
+        draw();
         return output;
+    }
+
+    public void draw()
+    {
+        Renderer r = BotLoopRenderer.forBotLoop(this);
+        int offx = 50;
+        int offy = 300;
+
+        r.drawRectangle2d(Color.green,new Point(offx,offy),10,400,true);
+        r.drawString2d(state.name+ ": " +state.getRating(),Color.CYAN,new Point(offx+20,offy-20),1,1);
+        for(State s : states)
+        {
+            r.drawString2d(s.name + ": " +s.getRating(),Color.white,new Point(offx+20,(int)(offy+(400-s.getRating()*40))),1,1);
+        }
     }
 
     State last;

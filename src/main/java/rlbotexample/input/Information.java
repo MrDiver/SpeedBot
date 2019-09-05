@@ -91,7 +91,7 @@ public class Information {
 
     public boolean isAfterKickoff()
     {
-        return this.secondsElapsed()-kickoffLast<3;
+        return this.secondsElapsed()-kickoffLast<5;
     }
 
     public float timeAfterKickoff()

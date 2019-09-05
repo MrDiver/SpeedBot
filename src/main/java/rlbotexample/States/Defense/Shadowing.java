@@ -10,6 +10,7 @@ import rlbotexample.input.Predictions;
 public class Shadowing extends State {
     public Shadowing(Information information, ActionLibrary actionLibrary, Predictions predictions) {
         super(information, actionLibrary, predictions);
+        name = "Shadowing";
     }
 
     @Override

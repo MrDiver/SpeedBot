@@ -141,12 +141,13 @@ public class ActionLibrary {
     {
         GameCar me = information.me;
         Value angle = ()->(float)Util.cap(information.me.transformToLocal(loc).angle2D(),-1,1);
-        Value throttle = () -> (me.speed()<speed?1:me.speed()>=speed?0:0.1f);
-        Bool boost = () -> speed > 1410 && me.speed() < speed && me.speed() < 2250 && Math.abs(angle.val())<0.2f;
-
+        Value nocapangle = ()->(float)information.me.transformToLocal(loc).angle2D();
+        Value throttle = () -> (Math.abs(nocapangle.val())>=1? 0.2f : me.speed()<speed?1:me.speed()>=speed?0:0.1f);
+        //Bool slide = () ->(Math.abs(nocapangle.val()))> 1.5 && me.velocity().magnitude()>1200;
+        //Bool boost = () -> speed > 1410 && me.speed() < speed && me.speed() < 2250 && Math.abs(angle.val())<0.2f;
 
         Action a = action(100)
-                .add(part(0,10000).withThrottle(throttle).withSteer(angle).withBoost(boost));
+                .add(part(0,10000).withThrottle(throttle).withSteer(angle)/*.withBoost(boost)/*.withSlide(slide)*/);
         if(tillLocation)
             a.addCondition(()->me.location().distance(loc)<50);
 

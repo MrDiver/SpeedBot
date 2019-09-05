@@ -56,11 +56,11 @@ public class Vector3 extends rlbot.vector.Vector3 {
         return scaled(scaleRequired);
     }
 
-    public double distance(Vector3 other) {
+    public float distance(Vector3 other) {
         double xDiff = x - other.x;
         double yDiff = y - other.y;
         double zDiff = z - other.z;
-        return Math.sqrt(xDiff * xDiff + yDiff * yDiff + zDiff * zDiff);
+        return (float)Math.sqrt(xDiff * xDiff + yDiff * yDiff + zDiff * zDiff);
     }
 
     public double magnitude() {

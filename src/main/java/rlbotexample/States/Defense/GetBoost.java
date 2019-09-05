@@ -10,11 +10,14 @@ import rlbotexample.input.Predictions;
 public class GetBoost extends State {
     public GetBoost(Information information, ActionLibrary actionLibrary, Predictions predictions) {
         super(information, actionLibrary, predictions);
+        name = "Defensive GetBoost";
     }
 
     @Override
     public AbstractAction getAction() {
-        return chain(1);
+        if(information.me.boost() < 30)
+            return actionLibrary.driveTowards(predictions.nearestBoostFull(),1000,true);
+        return actionLibrary.driveTowards(predictions.nearestBoostSmallInRange(),1000,true);
     }
 
     @Override
@@ -24,11 +27,11 @@ public class GetBoost extends State {
 
     @Override
     public boolean isAvailable() {
-        return false;
+        return true;
     }
 
     @Override
     public double getRating() {
-        return 0;
+        return (100 - information.me.boost())/11;
     }
 }

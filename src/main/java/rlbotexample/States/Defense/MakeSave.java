@@ -11,6 +11,7 @@ public class MakeSave extends State {
 
     public MakeSave(Information information, ActionLibrary actionLibrary, Predictions predictions) {
         super(information, actionLibrary, predictions);
+        name = "Make Save";
     }
 
     @Override

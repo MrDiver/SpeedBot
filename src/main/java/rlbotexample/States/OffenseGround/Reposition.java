@@ -12,6 +12,7 @@ public class Reposition extends State {
 
     public Reposition(Information information, ActionLibrary actionLibrary, Predictions predictions) {
         super(information, actionLibrary, predictions);
+        name ="Reposition";
     }
 
     @Override

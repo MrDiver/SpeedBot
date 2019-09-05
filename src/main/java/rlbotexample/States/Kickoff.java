@@ -29,6 +29,7 @@ public class Kickoff extends State {
 
     public Kickoff(Information information, ActionLibrary actionLibrary, Predictions predictions) {
         super(information, actionLibrary, predictions);
+        name = "Kickoff";
     }
 
     @Override
