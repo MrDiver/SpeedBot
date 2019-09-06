@@ -16,7 +16,7 @@ public class TryAerial extends State {
 
     @Override
     public AbstractAction getAction() {
-        return chain(1);
+        return actionLibrary.flatToSurface();
     }
 
     @Override
@@ -26,11 +26,11 @@ public class TryAerial extends State {
 
     @Override
     public boolean isAvailable() {
-        return false;
+        return true;
     }
 
     @Override
     public double getRating() {
-        return 0;
+        return Math.abs(information.me.getRotator().roll())>0.2&&!information.me.hasWheelContact()?10:0;
     }
 }

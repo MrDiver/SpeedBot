@@ -29,10 +29,8 @@ public class ActionChain extends AbstractAction{
                     active = false;
                 }
             }
-            if(current.isActive())
-            {
-                current.execute(output);
-            }
+        if(current != null)
+            current.execute(output);
 
         return output;
     }

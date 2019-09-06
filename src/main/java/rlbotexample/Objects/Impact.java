@@ -8,6 +8,11 @@ import java.awt.*;
 
 public class Impact {
     boolean impact;
+
+    public Vector3 getLocation() {
+        return location;
+    }
+
     Vector3 location;
     final float timeUntilImpact;
 

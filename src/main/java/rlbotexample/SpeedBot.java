@@ -40,6 +40,7 @@ public class SpeedBot implements Bot {
         ActionLibrary a = new ActionLibrary(information);
         state = new Kickoff(information,a,predictions);
         states = new ArrayList<>();
+        states.add(new GetBoost(information,a,predictions));
         states.add(new Kickoff(information,a,predictions));
         states.add(new AfterKickoff(information,a,predictions));
         states.add(new BallToOwnside(information,a,predictions));
@@ -49,8 +50,9 @@ public class SpeedBot implements Bot {
         states.add(new Dribble(information,a,predictions));
         states.add(new Reposition(information,a,predictions));
         states.add(new TakeShot(information,a,predictions));
-        states.add(new GetBoost(information,a,predictions));
         states.add(new Shadowing(information,a,predictions));
+        states.add(new Defending(information,a,predictions));
+
     }
 
     /**
@@ -63,8 +65,8 @@ public class SpeedBot implements Bot {
         if(information.isRoundActive())
             output = actionController.execute(output,state);
         predictions.draw(this);
-        //actionController.draw(this);
-        //state.draw(this);
+        actionController.draw(this);
+        state.draw(this);
         draw();
         return output;
     }
@@ -121,6 +123,7 @@ public class SpeedBot implements Bot {
         BoostPadManager.loadGameTickPacket(packet);
         //DropshotTileManager.loadGameTickPacket(packet);
         information.loadGameTickPacket(packet);
+        predictions.update();
 
         ControlsOutput controlsOutput = processInput();
 

@@ -6,23 +6,26 @@ import rlbotexample.Controller.ActionLibrary;
 import rlbotexample.States.State;
 import rlbotexample.input.Information;
 import rlbotexample.input.Predictions;
+import rlbotexample.vector.Vector3;
 
-public class GetBoost extends State {
-    public GetBoost(Information information, ActionLibrary actionLibrary, Predictions predictions) {
+import java.awt.*;
+
+public class Defending extends State {
+    public Defending(Information information, ActionLibrary actionLibrary, Predictions predictions) {
         super(information, actionLibrary, predictions);
-        name = "Defensive GetBoost";
+        name = "Defending";
     }
 
+    Vector3 defPosition;
     @Override
     public AbstractAction getAction() {
-        if(information.me.boost() < 30)
-            return actionLibrary.driveTowards(predictions.nearestBoostFull(),2300,false);
-        return actionLibrary.driveTowards(predictions.nearestBoostSmallInRange(),2300,false);
+        defPosition = information.ownGoal.location().plus(new Vector3(predictions.ballOnLeft()?500:-500,0,0));
+        return chain(1);
     }
 
     @Override
     public void draw(Bot bot) {
-
+        defPosition.draw(Color.yellow,bot);
     }
 
     @Override
@@ -32,6 +35,6 @@ public class GetBoost extends State {
 
     @Override
     public double getRating() {
-        return (100 - information.me.boost())/21;
+        return predictions.ballOnOwnSide() && !predictions.possession() && predictions.meInGoal() ? 8:2;
     }
 }

@@ -59,6 +59,8 @@ public class BallPredictionHelper {
             BallPrediction ballPrediction = RLBotDll.getBallPrediction();
             for (int i = 0; i < ballPrediction.slicesLength(); i += 1) {
                 PredictionSlice slice = ballPrediction.slices(i);
+                if(slice.gameSeconds()>gameSeconds)
+                    break;
                 Vector3 pos = new Vector3(slice.physics().location());
 
                 //if(i%10==0)

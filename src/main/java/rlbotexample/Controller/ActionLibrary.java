@@ -140,18 +140,39 @@ public class ActionLibrary {
     public ActionChain driveTowards(Vector3 loc,float speed,boolean tillLocation)
     {
         GameCar me = information.me;
-        Value angle = ()->(float)Util.cap(information.me.transformToLocal(loc).angle2D(),-1,1);
+        Value angle = ()->(float)Util.cap(information.me.transformToLocal(loc).angle2D()*2,-1,1);
         Value nocapangle = ()->(float)information.me.transformToLocal(loc).angle2D();
-        Value throttle = () -> (Math.abs(nocapangle.val())>=1? 0.2f : me.speed()<speed?1:me.speed()>=speed?0:0.1f);
-        //Bool slide = () ->(Math.abs(nocapangle.val()))> 1.5 && me.velocity().magnitude()>1200;
+        Value throttle = () -> (Math.abs(nocapangle.val())>=0.5? 0.2f : me.speed()<speed?1:me.speed()>=speed?0:0.1f);
+        //System.out.println(nocapangle.val());
+        //Bool slide = () ->(Math.abs(nocapangle.val()))> 2 && me.velocity().magnitude()>1200;
         //Bool boost = () -> speed > 1410 && me.speed() < speed && me.speed() < 2250 && Math.abs(angle.val())<0.2f;
 
-        Action a = action(100)
+        Action a = action(1000)
                 .add(part(0,10000).withThrottle(throttle).withSteer(angle)/*.withBoost(boost)/*.withSlide(slide)*/);
         if(tillLocation)
             a.addCondition(()->me.location().distance(loc)<50);
 
-        ActionChain chain = chain(3000)
+        ActionChain chain = chain(10)
+                .addAction(a);
+
+        return chain;
+    }
+
+    public ActionChain driveTowardsFaster(Vector3 loc,float speed,boolean tillLocation)
+    {
+        GameCar me = information.me;
+        Value angle = ()->(float)Util.cap(information.me.transformToLocal(loc).angle2D()*4,-1,1);
+        Value nocapangle = ()->(float)information.me.transformToLocal(loc).angle2D();
+        Value throttle = () -> (me.speed()<speed?1:me.speed()>=speed?0:0.2f);
+        Bool slide = () ->(Math.abs(nocapangle.val()))> 1.2 && me.velocity().magnitude()>1200;
+        Bool boost = () -> speed > 1410 && me.speed() < speed && me.speed() < 2250 && Math.abs(angle.val())<0.2f;
+
+        Action a = action(1000)
+                .add(part(0,10000).withThrottle(throttle).withSteer(angle).withBoost(boost).withSlide(slide));
+        if(tillLocation)
+            a.addCondition(()->me.location().distance(loc)<50);
+
+        ActionChain chain = chain(10)
                 .addAction(a);
 
         return chain;
@@ -162,27 +183,34 @@ public class ActionLibrary {
         GameCar me = information.me;
         Value angle = ()->(float)Util.cap(information.me.transformToLocal(loc).angle2D(),-1,1);
         Value angleHard = ()->angle.val()<-0.1f?-1: angle.val() > 0.1f ? 1: 0;
-        Value throttle = () -> (me.speed()<speed?1:me.speed()>=speed?0:0.1f);
-        Bool boost = () -> speed > 1410 && me.speed() < speed && me.speed() < 2250 && Math.abs(angle.val())<0.2f;
+        Value nocapangle = ()->(float)information.me.transformToLocal(loc).angle2D();
+        Value throttle = () -> (Math.abs(nocapangle.val())>=1? 0.2f: me.speed()<speed?1:me.speed()>=speed?0:0.1f);
+        /*Bool boost = () -> speed > 1410 && me.speed() < speed && me.speed() < 2250 && Math.abs(angle.val())<0.2f;*/
         ActionLibrary actionLibrary = new ActionLibrary(information);
 
+        Bool slide = ()-> Math.abs(angle.val()) > 1;
         Action a = action(100)
-                .add(part(0,200000).withThrottle(throttle).withSteer(angle).withBoost(boost));
-
-        Bool slide = ()-> Math.abs(angle.val()) > Math.PI/2;
-        Action correctAngle = action(300)
-                .add(part(0,3000000).withThrottle(1).withBoost().withSlide(slide).withSteer(angleHard).withBoost()).addCondition(()->angle.val() <0.1f);
+                .add(part(0,200000).withThrottle(throttle).withSteer(angle).withSlide(slide)/*.withBoost(boost)*/);
 
         if(tillLocation)
             a.addCondition(()->me.location().distance(loc)<50);
 
-        ActionChain chain = chain(3000)
-                .addAction(correctAngle);
-                if(Math.abs(angle.val())<0.2f&&me.location().distance(loc)>1500)
-                    chain.addAction(actionLibrary.diagonalFlick(angleHard.val(),true));
+        ActionChain chain = chain(3000);
+                if(Math.abs(angle.val())<0.3f&&me.location().distance(loc)>1000&&information.me.hasWheelContact()&&information.me.speed()<2100)
+                    chain.addAction(actionLibrary.diagonalFlick(nocapangle.val()<0?-1:1,information.me.speed()<1800));
                 chain.addAction(a);
 
         return chain;
+    }
+
+    public ActionChain turnToAngle(Value angle)
+    {
+        GameCar me = information.me;
+        Value angleHard = ()->angle.val()<-0.1f?-1: angle.val() > 0.1f ? 1: 0;
+        Bool slide = () ->(Math.abs(angle.val()))>1;
+        ActionChain actionChain = chain(10)
+                .addAction(action(1000).add(part(0,1000).withThrottle(1).withSlide(slide).withSteer(angleHard).withBoost()));
+        return actionChain;
     }
 
     public ActionChain boostTowards(Vector3 loc,float speed,boolean tillLocation)
