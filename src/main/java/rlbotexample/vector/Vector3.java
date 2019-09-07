@@ -91,6 +91,10 @@ public class Vector3 extends rlbot.vector.Vector3 {
         return new Vector2(x, y);
     }
 
+    public Vector3 make2D() {
+        return new Vector3(x,y,0);
+    }
+
     public double angle(Vector3 v) {
         double mag2 = magnitudeSquared();
         double vmag2 = v.magnitudeSquared();

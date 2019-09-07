@@ -1,21 +1,22 @@
 package rlbotexample.prediction;
 
 import rlbot.render.Renderer;
+import rlbotexample.objects.BoostPadManager;
 import rlbotexample.vector.Vector3;
 
 import java.awt.*;
 
-public class Node implements Comparable<Node>{
+public class NodeOld implements Comparable<NodeOld>{
     private Vector3 position;
-    private Node parent;
-    private Node nil;
+    private NodeOld parent;
+    private NodeOld nil;
     private int gCost; //DistanceFromStartingNode
     private int hCost; //DistanceFromEndNode
     private int fCost; //h + g
     private boolean closed;
     private boolean visited;
 
-    public Node(Vector3 position,Node nil)
+    public NodeOld(Vector3 position, NodeOld nil)
     {
         this.position = position;
         parent = nil;
@@ -28,18 +29,18 @@ public class Node implements Comparable<Node>{
         visited = false;
     }
 
-    public void setDestination(Node destination)
+    public void setDestination(NodeOld destination)
     {
         hCost = (int)position.distance(destination.getPosition());
     }
 
-    public boolean relax(Node other)
+    public boolean relax(NodeOld other)
     {
         if(parent == nil)
         {
             parent = other;
             gCost = other.gCost + getWeight();
-            fCost = gCost * hCost;
+            fCost = gCost + hCost;
             visited = true;
             return true;
         }else
@@ -48,7 +49,7 @@ public class Node implements Comparable<Node>{
             {
                 parent = other;
                 gCost = other.gCost + getWeight();
-                fCost = gCost * hCost;
+                fCost = gCost + hCost;
                 visited = true;
                 return true;
             }
@@ -63,11 +64,11 @@ public class Node implements Comparable<Node>{
 
     public int getWeight()
     {
-        return 1;
+        return (int)BoostPadManager.getNearestSmall(position).getLocation().distance(position);
     }
 
     @Override
-    public int compareTo(Node o) {
+    public int compareTo(NodeOld o) {
         return this.getfCost() - o.getfCost();
     }
 
@@ -79,11 +80,11 @@ public class Node implements Comparable<Node>{
         this.position = position;
     }
 
-    public Node getParent() {
+    public NodeOld getParent() {
         return parent;
     }
 
-    public void setParent(Node parent) {
+    public void setParent(NodeOld parent) {
         this.parent = parent;
     }
 

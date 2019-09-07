@@ -2,11 +2,8 @@ package rlbotexample;
 
 import rlbot.Bot;
 import rlbot.ControllerState;
-import rlbot.cppinterop.RLBotDll;
 import rlbot.flat.GameTickPacket;
 import rlbot.manager.BotLoopRenderer;
-import rlbot.render.NamedRenderer;
-import rlbot.render.RenderPacket;
 import rlbot.render.Renderer;
 import rlbotexample.Controller.ActionController;
 import rlbotexample.Controller.ActionLibrary;
@@ -19,9 +16,11 @@ import rlbotexample.States.OffenseGround.Reposition;
 import rlbotexample.States.OffenseGround.TakeShot;
 import rlbotexample.boost.BoostManager;
 import rlbotexample.input.Information;
-import rlbotexample.prediction.Grid;
-import rlbotexample.prediction.Predictions;
+import rlbotexample.prediction.*;
 import rlbotexample.output.ControlsOutput;
+import rlbotexample.prediction.PathCalculation.NoGridAStar;
+import rlbotexample.prediction.PathCalculation.Node;
+import rlbotexample.prediction.PathCalculation.NodeWeight;
 import rlbotexample.vector.Vector3;
 
 import java.awt.*;
@@ -35,8 +34,7 @@ public class SpeedBot implements Bot {
     private ArrayList<State>states;
     Information information;
     Predictions predictions;
-
-    Grid grid;
+    NoGridAStar noGridAStar;
     public SpeedBot(int playerIndex)
     {
         this.playerIndex = playerIndex;
@@ -58,8 +56,8 @@ public class SpeedBot implements Bot {
         states.add(new TakeShot(information,a,predictions));
         states.add(new Shadowing(information,a,predictions));
         states.add(new Defending(information,a,predictions));
-        grid = new Grid(50,50);
-        grid.initialize(new Vector3(0,0,0));
+
+        noGridAStar = new NoGridAStar(information);
     }
 
     /**
@@ -91,7 +89,17 @@ public class SpeedBot implements Bot {
         {
             r.drawString2d(s.name + ": " +s.getRating(),Color.white,new Point(offx+20,(int)(offy+(400-s.getRating()*40))),1,1);
         }
-        grid.AStar(information.me.location(),information.ownGoal.location(),6);
+
+        Vector3 off = information.me.location().plus(information.me.velocity());
+        NodeWeight weightFunction = (Node node)->{
+            float weight = 0;
+            weight += node.position.distance(BoostPadManager.getNearestSmall(node.position).getLocation())/2;
+            weight += node.position.distance(off)/4;
+            return weight;
+        };
+        noGridAStar.calculate(information.me.location(),information.ownGoal.location(),500,8,weightFunction);
+        noGridAStar.draw();
+        information.me.location().plus(information.me.velocity()).draw(Color.pink,this);
     }
 
     State last;

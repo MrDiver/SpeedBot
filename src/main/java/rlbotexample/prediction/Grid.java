@@ -1,62 +1,57 @@
 package rlbotexample.prediction;
 
-import rlbot.Bot;
-import rlbot.cppinterop.RLBotDll;
-import rlbot.manager.BotLoopRenderer;
 import rlbot.render.NamedRenderer;
 import rlbot.render.RenderPacket;
-import rlbot.render.Renderer;
 import rlbotexample.Util;
 import rlbotexample.objects.Path;
 import rlbotexample.vector.Vector3;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 public class Grid {
 
     int xNodes,yNodes;
     float xSpacing,ySpacing;
-    Node [][] nodes;
-    Node nil;
+    NodeOld[][] nodeOlds;
+    NodeOld nil;
     public Grid(int xNodes, int yNodes)
     {
         this.xNodes = xNodes;
         this.yNodes = yNodes;
         xSpacing = 8192/xNodes;
         ySpacing = 10240/yNodes;
-        nodes = new Node[yNodes][xNodes];
-        nil = new Node(new Vector3(0,100000,0),null);
+        nodeOlds = new NodeOld[yNodes][xNodes];
+        nil = new NodeOld(new Vector3(0,100000,0),null);
         for(int y = 0; y < yNodes; y++)
         {
             for(int x = 0; x < xNodes; x++)
             {
-                nodes[y][x] = new Node(new Vector3(x*xSpacing-4096,y*ySpacing-5120,0),nil);
+                nodeOlds[y][x] = new NodeOld(new Vector3(x*xSpacing-4096,y*ySpacing-5120,0),nil);
             }
         }
     }
 
-    public Node getNodeAt(Vector3 position)
+    public NodeOld getNodeAt(Vector3 position)
     {
         int y = (int)Util.cap((position.y+5120) / ySpacing,0,yNodes-1);
         int x = (int)Util.cap((position.x+4096) / xSpacing,0,xNodes-1);
 
-        return nodes[y][x];
+        return nodeOlds[y][x];
     }
 
     public void initialize(Vector3 target)
     {
-        Node destination = getNodeAt(target);
+        NodeOld destination = getNodeAt(target);
         for(int y = 0; y < yNodes; y++)
         {
             for(int x = 0; x < xNodes; x++)
             {
-                nodes[y][x].setDestination(destination);
-                nodes[y][x].setClosed(false);
-                nodes[y][x].setVisited(false);
-                nodes[y][x].setParent(nil);
-                nodes[y][x].setgCost(-1);
+                nodeOlds[y][x].setDestination(destination);
+                nodeOlds[y][x].setClosed(false);
+                nodeOlds[y][x].setVisited(false);
+                nodeOlds[y][x].setParent(nil);
+                nodeOlds[y][x].setgCost(-1);
             }
         }
     }
@@ -76,10 +71,10 @@ public class Grid {
 
 
                 for (int x = 0; x < xNodes; x += 1) {
-                    if(y%slicesY == 0/*||nodes[y][x].isClosed()*/)
+                    if(y%slicesY == 0/*||nodeOlds[y][x].isClosed()*/)
                     {
-                    if(x%slicesX == 0/*||nodes[y][x].isClosed()*/)
-                        nodes[y][x].draw(namedRenderer);
+                    if(x%slicesX == 0/*||nodeOlds[y][x].isClosed()*/)
+                        nodeOlds[y][x].draw(namedRenderer);
                     }
                 }
 
@@ -96,16 +91,16 @@ public class Grid {
             drawingY=0;*/
     }
 
-    public void AStar(Vector3 start, Vector3 destination,int range)
+    public Path AStar(Vector3 start, Vector3 destination,int range)
     {
         initialize(destination);
-        PriorityQueue<Node> openList = new PriorityQueue<>();
+        PriorityQueue<NodeOld> openList = new PriorityQueue<>();
         openList.add(getNodeAt(start));
 
         while (!openList.isEmpty())
         {
-            draw();
-            Node current = openList.poll();
+            //draw();
+            NodeOld current = openList.poll();
             current.setVisited(true);
             if(current == getNodeAt(destination))
             {
@@ -115,17 +110,16 @@ public class Grid {
                     path.add(current.getPosition());
                     current = current.getParent();
                 }
-                path.draw();
-                return;
+                return path;
             }
             current.close();
 
-            //Expand Node
+            //Expand NodeOld
             for(int y = -range; y < range; y++)
             {
                 for(int x = -range; x < range; x++)
                 {
-                    Node successor = getNodeAt(current.getPosition().plus(new Vector3(x*xSpacing,y*ySpacing,0)));
+                    NodeOld successor = getNodeAt(current.getPosition().plus(new Vector3(x*xSpacing,y*ySpacing,0)));
                     if(successor.isClosed())
                         continue;
                     boolean tmp = successor.relax(current);
@@ -137,5 +131,9 @@ public class Grid {
                 }
             }
         }
+        Path path = new Path();
+        path.add(start);
+        path.add(destination);
+        return path;
     }
 }
