@@ -1,7 +1,8 @@
-package rlbotexample.Objects;
+package rlbotexample.objects;
 
 import rlbot.Bot;
 import rlbot.manager.BotLoopRenderer;
+import rlbot.render.NamedRenderer;
 import rlbot.render.Renderer;
 import rlbotexample.vector.Vector3;
 
@@ -15,12 +16,19 @@ public class Path {
         points = new ArrayList<>();
     }
 
-    public void draw(Bot bot)
+    public void draw()
     {
-        Renderer r = BotLoopRenderer.forBotLoop(bot);
+        NamedRenderer r = new NamedRenderer("Path");
+        r.startPacket();
         for(int i = 1; i < points.size();i++)
         {
             r.drawLine3d(Color.yellow,points.get(i-1),points.get(i));
         }
+        r.finishAndSend();
+    }
+
+    public void add(Vector3 vector3)
+    {
+        points.add(vector3);
     }
 }

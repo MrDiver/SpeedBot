@@ -1,4 +1,4 @@
-package rlbotexample.Objects;
+package rlbotexample.objects;
 
 import rlbot.flat.BallInfo;
 import rlbotexample.vector.Vector3;

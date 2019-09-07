@@ -3,9 +3,7 @@ package rlbotexample.States;
 import rlbot.Bot;
 import rlbotexample.Controller.*;
 import rlbotexample.input.Information;
-import rlbotexample.input.Predictions;
-
-import javax.sound.sampled.Line;
+import rlbotexample.prediction.Predictions;
 
 public abstract class State {
 

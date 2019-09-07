@@ -1,13 +1,13 @@
-package rlbotexample.input;
+package rlbotexample.prediction;
 
 import rlbot.Bot;
 import rlbot.cppinterop.RLBotDll;
 import rlbot.cppinterop.RLBotInterfaceException;
 import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
-import rlbotexample.Objects.*;
+import rlbotexample.objects.*;
 import rlbotexample.Util;
-import rlbotexample.prediction.BallPredictionHelper;
+import rlbotexample.input.Information;
 import rlbotexample.vector.Vector3;
 
 import java.awt.*;
@@ -232,6 +232,17 @@ public class Predictions {
         return leftball < leftme && rightme < rightball;
     }
 
+    public boolean meAlmostCanShoot()
+    {
+        float leftball = info.ball.location().minus(info.eneGoal.leftPost()).angle2D()-0.1f;
+        float rightball =info.ball.location().minus(info.eneGoal.rightPost()).angle2D()+0.1f;
+        float leftme = info.me.location().minus(info.eneGoal.leftPost()).angle2D();
+        float rightme =info.me.location().minus(info.eneGoal.rightPost()).angle2D();
+        //System.out.println(leftball+ "\t" + ballAngle + "\t" + rightme);
+        //System.out.println(leftme+ "\t" + rightball);
+        return leftball < leftme && rightme < rightball;
+    }
+
     public boolean enemyCanShoot()
     {
         for(GameCar car: info.enemyList()) {
@@ -284,12 +295,13 @@ public class Predictions {
         ballFutureTouch().draw(Color.cyan,bot);
         r.drawString2d("Reaching Owngoal: "+isHittingOwngoal().isImpacting(), Color.red,new Point(offsetx,offsety+100),1,1);
         r.drawString2d("Reaching Enemygoal: "+isHittingEnemygoal().isImpacting(), Color.red,new Point(offsetx,offsety+120),1,1);
-        r.drawString2d("Me Can Shoot: "+meCanShoot(), Color.red,new Point(offsetx,offsety+140),1,1);
-        r.drawString2d("Enemy Can Shoot: "+enemyCanShoot(), Color.red,new Point(offsetx,offsety+160),1,1);
-        r.drawString2d("Own Side: "+ballOnOwnSide(), Color.red,new Point(offsetx,offsety+180),1,1);
-        r.drawString2d("In Goal: "+meInGoal(), Color.red,new Point(offsetx,offsety+200),1,1);
-        r.drawString2d("Side: "+(ballOnLeft()? "left":"right"), Color.red,new Point(offsetx,offsety+220),1,1);
-        r.drawString2d("GoodAngle: "+goodAngle(), Color.red,new Point(offsetx,offsety+240),1,1);
+        r.drawString2d("Me Can Shoot: "+meCanShoot(), meCanShoot()? Color.green:Color.red,new Point(offsetx,offsety+140),1,1);
+        r.drawString2d("Me Almost Can Shoot: "+meAlmostCanShoot(), meAlmostCanShoot()? Color.green:Color.red,new Point(offsetx,offsety+160),1,1);
+        r.drawString2d("Enemy Can Shoot: "+enemyCanShoot(), enemyCanShoot()? Color.green:Color.red,new Point(offsetx,offsety+180),1,1);
+        r.drawString2d("Own Side: "+ballOnOwnSide(), Color.red,new Point(offsetx,offsety+200),1,1);
+        r.drawString2d("In Goal: "+meInGoal(), Color.red,new Point(offsetx,offsety+220),1,1);
+        r.drawString2d("Side: "+(ballOnLeft()? "left":"right"), Color.red,new Point(offsetx,offsety+240),1,1);
+        r.drawString2d("GoodAngle: "+goodAngle(), Color.red,new Point(offsetx,offsety+260),1,1);
 
 
         r.drawLine3d(Color.red,info.ownGoal.location(),info.ownGoal.location().plus(info.me.location().minus(info.ownGoal.location()).scaledToMagnitude(2500)));

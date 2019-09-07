@@ -1,4 +1,4 @@
-package rlbotexample.Objects;
+package rlbotexample.objects;
 
 import rlbot.Bot;
 import rlbot.manager.BotLoopRenderer;

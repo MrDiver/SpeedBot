@@ -1,7 +1,7 @@
 package rlbotexample;
 
-import rlbotexample.Objects.Ball;
-import rlbotexample.Objects.GameObject;
+import rlbotexample.objects.Ball;
+import rlbotexample.objects.GameObject;
 import rlbotexample.input.Information;
 import rlbotexample.vector.Vector3;
 

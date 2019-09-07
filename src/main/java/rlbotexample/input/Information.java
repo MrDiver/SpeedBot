@@ -1,12 +1,9 @@
 package rlbotexample.input;
 
-import rlbot.cppinterop.RLBotDll;
 import rlbot.flat.*;
-import rlbotexample.Objects.*;
+import rlbotexample.objects.*;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 /**
  * Holds all Information about the current game

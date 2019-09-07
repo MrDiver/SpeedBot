@@ -5,7 +5,7 @@ import rlbotexample.Controller.AbstractAction;
 import rlbotexample.Controller.ActionLibrary;
 import rlbotexample.States.State;
 import rlbotexample.input.Information;
-import rlbotexample.input.Predictions;
+import rlbotexample.prediction.Predictions;
 import rlbotexample.vector.Vector3;
 
 import java.awt.*;
@@ -20,7 +20,7 @@ public class Defending extends State {
     @Override
     public AbstractAction getAction() {
         defPosition = information.ownGoal.location().plus(new Vector3(predictions.ballOnLeft()?500:-500,0,0));
-        return chain(1);
+        return actionLibrary.driveTowardsFaster(information.ball.location(),2300,false);
     }
 
     @Override

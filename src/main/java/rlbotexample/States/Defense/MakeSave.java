@@ -5,7 +5,7 @@ import rlbotexample.Controller.AbstractAction;
 import rlbotexample.Controller.ActionLibrary;
 import rlbotexample.States.State;
 import rlbotexample.input.Information;
-import rlbotexample.input.Predictions;
+import rlbotexample.prediction.Predictions;
 
 public class MakeSave extends State {
 

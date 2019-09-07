@@ -1,4 +1,4 @@
-package rlbotexample.Objects;
+package rlbotexample.objects;
 
 import rlbotexample.Util;
 import rlbotexample.vector.Vector3;

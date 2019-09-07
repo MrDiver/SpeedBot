@@ -5,7 +5,7 @@ import rlbotexample.Controller.AbstractAction;
 import rlbotexample.Controller.ActionLibrary;
 import rlbotexample.States.State;
 import rlbotexample.input.Information;
-import rlbotexample.input.Predictions;
+import rlbotexample.prediction.Predictions;
 
 public class GetBoost extends State {
     public GetBoost(Information information, ActionLibrary actionLibrary, Predictions predictions) {
@@ -27,11 +27,11 @@ public class GetBoost extends State {
 
     @Override
     public boolean isAvailable() {
-        return true;
+        return !predictions.isHittingOwngoal().isImpacting();
     }
 
     @Override
     public double getRating() {
-        return (100 - information.me.boost())/21;
+        return (100 - information.me.boost())/16;
     }
 }

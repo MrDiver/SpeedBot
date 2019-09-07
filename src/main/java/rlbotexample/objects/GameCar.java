@@ -1,4 +1,4 @@
-package rlbotexample.Objects;
+package rlbotexample.objects;
 
 import rlbot.flat.PlayerInfo;
 import rlbot.flat.Rotator;

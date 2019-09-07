@@ -1,10 +1,9 @@
 package rlbotexample.Controller;
 
 import rlbot.flat.Rotator;
-import rlbotexample.Objects.GameCar;
+import rlbotexample.objects.GameCar;
 import rlbotexample.Util;
 import rlbotexample.input.Information;
-import rlbotexample.input.Predictions;
 import rlbotexample.vector.Vector3;
 
 public class ActionLibrary {
@@ -164,7 +163,7 @@ public class ActionLibrary {
         Value angle = ()->(float)Util.cap(information.me.transformToLocal(loc).angle2D()*4,-1,1);
         Value nocapangle = ()->(float)information.me.transformToLocal(loc).angle2D();
         Value throttle = () -> (me.speed()<speed?1:me.speed()>=speed?0:0.2f);
-        Bool slide = () ->(Math.abs(nocapangle.val()))> 1.2 && me.velocity().magnitude()>1200;
+        Bool slide = () ->(Math.abs(nocapangle.val()))> 1.8 && me.velocity().magnitude()>1200;
         Bool boost = () -> speed > 1410 && me.speed() < speed && me.speed() < 2250 && Math.abs(angle.val())<0.2f;
 
         Action a = action(1000)

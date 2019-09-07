@@ -6,9 +6,8 @@ import rlbot.cppinterop.RLBotInterfaceException;
 import rlbot.flat.BallPrediction;
 import rlbot.flat.PredictionSlice;
 import rlbot.render.Renderer;
-import rlbotexample.Objects.Impact;
-import rlbotexample.Objects.Zone;
-import rlbotexample.Util;
+import rlbotexample.objects.Impact;
+import rlbotexample.objects.Zone;
 import rlbotexample.input.Information;
 import rlbotexample.vector.Vector3;
 

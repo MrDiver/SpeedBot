@@ -2,12 +2,15 @@ package rlbotexample;
 
 import rlbot.Bot;
 import rlbot.ControllerState;
+import rlbot.cppinterop.RLBotDll;
 import rlbot.flat.GameTickPacket;
 import rlbot.manager.BotLoopRenderer;
+import rlbot.render.NamedRenderer;
+import rlbot.render.RenderPacket;
 import rlbot.render.Renderer;
 import rlbotexample.Controller.ActionController;
 import rlbotexample.Controller.ActionLibrary;
-import rlbotexample.Objects.BoostPadManager;
+import rlbotexample.objects.BoostPadManager;
 import rlbotexample.States.*;
 import rlbotexample.States.Defense.*;
 import rlbotexample.States.OffenseAir.TryAerial;
@@ -15,10 +18,11 @@ import rlbotexample.States.OffenseGround.Dribble;
 import rlbotexample.States.OffenseGround.Reposition;
 import rlbotexample.States.OffenseGround.TakeShot;
 import rlbotexample.boost.BoostManager;
-import rlbotexample.dropshot.DropshotTileManager;
 import rlbotexample.input.Information;
-import rlbotexample.input.Predictions;
+import rlbotexample.prediction.Grid;
+import rlbotexample.prediction.Predictions;
 import rlbotexample.output.ControlsOutput;
+import rlbotexample.vector.Vector3;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -31,6 +35,8 @@ public class SpeedBot implements Bot {
     private ArrayList<State>states;
     Information information;
     Predictions predictions;
+
+    Grid grid;
     public SpeedBot(int playerIndex)
     {
         this.playerIndex = playerIndex;
@@ -52,7 +58,8 @@ public class SpeedBot implements Bot {
         states.add(new TakeShot(information,a,predictions));
         states.add(new Shadowing(information,a,predictions));
         states.add(new Defending(information,a,predictions));
-
+        grid = new Grid(50,50);
+        grid.initialize(new Vector3(0,0,0));
     }
 
     /**
@@ -64,9 +71,9 @@ public class SpeedBot implements Bot {
         state = choosState();
         if(information.isRoundActive())
             output = actionController.execute(output,state);
-        predictions.draw(this);
-        actionController.draw(this);
-        state.draw(this);
+        //predictions.draw(this);
+        //actionController.draw(this);
+        //state.draw(this);
         draw();
         return output;
     }
@@ -79,10 +86,12 @@ public class SpeedBot implements Bot {
 
         r.drawRectangle2d(Color.green,new Point(offx,offy),10,400,true);
         r.drawString2d(state.name+ ": " +state.getRating(),Color.CYAN,new Point(offx+20,offy-20),1,1);
+        r.drawRectangle3d(Color.white,new Vector3(0,0,0),10,10,true);
         for(State s : states)
         {
             r.drawString2d(s.name + ": " +s.getRating(),Color.white,new Point(offx+20,(int)(offy+(400-s.getRating()*40))),1,1);
         }
+        grid.AStar(information.me.location(),information.ownGoal.location(),6);
     }
 
     State last;

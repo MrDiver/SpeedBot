@@ -1,19 +1,13 @@
 package rlbotexample.States;
 
 import rlbot.Bot;
-import rlbot.gamestate.GameInfoState;
-import rlbot.gamestate.GameState;
 import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
 import rlbotexample.Controller.*;
-import rlbotexample.Objects.Ball;
-import rlbotexample.Objects.BoostPadManager;
-import rlbotexample.Objects.GameCar;
-import rlbotexample.Util;
-import rlbotexample.boost.BoostManager;
-import rlbotexample.boost.BoostPad;
+import rlbotexample.objects.Ball;
+import rlbotexample.objects.GameCar;
 import rlbotexample.input.Information;
-import rlbotexample.input.Predictions;
+import rlbotexample.prediction.Predictions;
 import rlbotexample.vector.Vector3;
 
 import java.awt.*;

@@ -4,11 +4,9 @@ import rlbot.Bot;
 import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
 import rlbotexample.Controller.AbstractAction;
-import rlbotexample.Controller.ActionChain;
 import rlbotexample.Controller.ActionLibrary;
-import rlbotexample.Objects.BoostPadManager;
 import rlbotexample.input.Information;
-import rlbotexample.input.Predictions;
+import rlbotexample.prediction.Predictions;
 import rlbotexample.vector.Vector3;
 
 import java.awt.*;

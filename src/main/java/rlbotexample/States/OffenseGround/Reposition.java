@@ -7,7 +7,7 @@ import rlbotexample.Controller.ActionLibrary;
 import rlbotexample.States.State;
 import rlbotexample.Util;
 import rlbotexample.input.Information;
-import rlbotexample.input.Predictions;
+import rlbotexample.prediction.Predictions;
 import rlbotexample.vector.Vector3;
 
 import java.awt.*;
@@ -25,14 +25,17 @@ public class Reposition extends State {
         ActionChain actionChain = chain(10);
         if(predictions.isHittingShotZone().isImpacting()&&information.ball.velocity().magnitude()> 500)
         {
-            actionChain.addAction(actionLibrary.driveTowardsFaster(predictions.isHittingShotZone().getLocation().minus(new Vector3(0,-information.me.teamSign()*1500,0)),2300,false));
+            actionChain.addAction(actionLibrary.driveTowardsFaster(predictions.ballFutureTouch(),2300,false));
             return actionChain;
         }
-        int speed = (!predictions.ballOnGround())&&information.me.location().distance(information.ball.location())<1000?100:2300;
+        int speed = (predictions.ballTimeTillTouchGround()>0.5)&&information.me.location().distance(information.ball.location())<1000?100:2300;
         float distanceToBall =information.me.location().distance(information.ball.location());
         float distanceToGoal = information.ball.location().distance(information.eneGoal.location());
         tmp = information.ball.location().plus(information.ball.location().minus(information.eneGoal.location()).scaledToMagnitude(distanceToBall/4));
-        tmp = new Vector3(Util.cap(tmp.x*1.02,-4000,4000),Util.cap(tmp.y+1000*information.me.teamSign()*(distanceToBall/10000),-5000,5000),0);
+        Vector3 offset = information.ball.location().minus(information.eneGoal.location()).scaledToMagnitude(100);
+        tmp = information.ball.location().plus(new Vector3(offset.x,offset.y/2,offset.z));
+        tmp = new Vector3(Util.cap(tmp.x*1.01,-4000,4000),Util.cap(tmp.y+1000*information.me.teamSign()*(distanceToBall/10000),-5000,5000),0);
+
         actionChain.addAction(actionLibrary.driveTowardsFaster(tmp,speed,false));
         return actionChain;
     }

@@ -5,7 +5,7 @@ import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
 import rlbotexample.Controller.*;
 import rlbotexample.input.Information;
-import rlbotexample.input.Predictions;
+import rlbotexample.prediction.Predictions;
 import rlbotexample.vector.Vector3;
 
 import java.awt.*;

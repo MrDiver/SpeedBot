@@ -1,6 +1,5 @@
-package rlbotexample.Objects;
+package rlbotexample.objects;
 
-import rlbot.Bot;
 import rlbot.render.Renderer;
 import rlbotexample.vector.Vector3;
 

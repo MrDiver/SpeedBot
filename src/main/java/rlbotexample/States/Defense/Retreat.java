@@ -5,7 +5,7 @@ import rlbotexample.Controller.AbstractAction;
 import rlbotexample.Controller.ActionLibrary;
 import rlbotexample.States.State;
 import rlbotexample.input.Information;
-import rlbotexample.input.Predictions;
+import rlbotexample.prediction.Predictions;
 
 import java.awt.*;
 
@@ -39,6 +39,6 @@ public class Retreat extends State {
 
     @Override
     public double getRating() {
-        return predictions.isHittingOwngoal().isImpacting()||predictions.wrongSide()||predictions.enemyCanShoot()||!predictions.possession()?7:0;
+        return predictions.isHittingOwngoal().isImpacting()||predictions.wrongSide()||predictions.enemyCanShoot()||!predictions.possession()||tmp != null && tmp.isActive()?7:0;
     }
 }
