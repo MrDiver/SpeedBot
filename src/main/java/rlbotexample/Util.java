@@ -128,7 +128,7 @@ public class Util {
         return difference.dotProduct(goalToBall);
     }
 
-    public static double cap (double val,double l,double h)
+    public static float cap (float val,float l,float h)
     {
         if(val < l)
             return l;
@@ -138,9 +138,9 @@ public class Util {
             return val;
     }
 
-    public static double steer(double angle)
+    public static float steer(float angle)
     {
-        double finalv = Math.pow(10 * angle+sign(angle),3)/20;
+        float finalv = (float)Math.pow(10 * angle+sign(angle),3)/20;
         return cap(finalv,-1,1);
     }
 

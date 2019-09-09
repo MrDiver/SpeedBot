@@ -92,6 +92,11 @@ public class Vector2 {
         return idealRad - currentRad;
     }
 
+    public Vector3 make3D()
+    {
+        return new Vector3(this.x,this.y,0);
+    }
+
     /**
      * Will always return a positive value <= Math.PI
      */

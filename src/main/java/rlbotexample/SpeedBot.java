@@ -7,6 +7,7 @@ import rlbot.manager.BotLoopRenderer;
 import rlbot.render.Renderer;
 import rlbotexample.Controller.ActionController;
 import rlbotexample.Controller.ActionLibrary;
+import rlbotexample.States.OffenseGround.CatchBall;
 import rlbotexample.objects.BoostPadManager;
 import rlbotexample.States.*;
 import rlbotexample.States.Defense.*;
@@ -56,6 +57,7 @@ public class SpeedBot implements Bot {
         states.add(new TakeShot(information,a,predictions));
         states.add(new Shadowing(information,a,predictions));
         states.add(new Defending(information,a,predictions));
+        states.add(new CatchBall(information,a,predictions));
 
         noGridAStar = new NoGridAStar(information);
     }
@@ -69,9 +71,9 @@ public class SpeedBot implements Bot {
         state = choosState();
         if(information.isRoundActive())
             output = actionController.execute(output,state);
-        //predictions.draw(this);
-        //actionController.draw(this);
-        //state.draw(this);
+        predictions.draw(this);
+        actionController.draw(this);
+        state.draw(this);
         draw();
         return output;
     }
@@ -97,9 +99,9 @@ public class SpeedBot implements Bot {
             weight += node.position.distance(off)/4;
             return weight;
         };
-        noGridAStar.calculate(information.me.location(),information.ownGoal.location(),500,8,weightFunction);
-        noGridAStar.draw();
-        information.me.location().plus(information.me.velocity()).draw(Color.pink,this);
+        //noGridAStar.calculate(information.me.location(),information.ownGoal.location(),500,8,weightFunction);
+        //noGridAStar.draw();
+        //information.me.location().plus(information.me.velocity()).draw(Color.pink,this);
     }
 
     State last;

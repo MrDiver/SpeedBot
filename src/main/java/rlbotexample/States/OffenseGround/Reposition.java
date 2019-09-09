@@ -34,7 +34,7 @@ public class Reposition extends State {
         tmp = information.ball.location().plus(information.ball.location().minus(information.eneGoal.location()).scaledToMagnitude(distanceToBall/4));
         Vector3 offset = information.ball.location().minus(information.eneGoal.location()).scaledToMagnitude(100);
         tmp = information.ball.location().plus(new Vector3(offset.x,offset.y/2,offset.z));
-        tmp = new Vector3(Util.cap(tmp.x*1.01,-4000,4000),Util.cap(tmp.y+1000*information.me.teamSign()*(distanceToBall/10000),-5000,5000),0);
+        tmp = new Vector3(Util.cap(tmp.x*1.01f,-4000,4000),Util.cap(tmp.y+1000*information.me.teamSign()*(distanceToBall/10000),-5000,5000),0);
 
         actionChain.addAction(actionLibrary.driveTowardsFaster(tmp,speed,false));
         return actionChain;
