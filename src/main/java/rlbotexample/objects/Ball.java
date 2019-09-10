@@ -18,4 +18,9 @@ public class Ball extends GenericObject{
     {
         return new Vector3(b.physics().angularVelocity());
     }
+
+    @Override
+    public Vector3 rotation() {
+        return new Vector3(0,Math.atan2(this.velocity().normalized().y,this.velocity().normalized().x),0);
+    }
 }

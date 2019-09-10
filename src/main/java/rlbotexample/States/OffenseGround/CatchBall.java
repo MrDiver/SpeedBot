@@ -21,7 +21,7 @@ public class CatchBall extends State {
     @Override
     public AbstractAction getAction() {
         Value angle = ()-> Util.cap(Util.steer(information.me.transformToLocal(predictions.ballFutureTouch()).angle2D()),-1,1);
-        Value distance = ()-> information.me.location().distance(predictions.ballFutureTouch())-30;
+        Value distance = ()-> information.me.location().distance(predictions.ballFutureTouch())-20;
         Value velocityDistance = ()-> information.me.location().distance(information.me.location().plus(information.me.velocity().scaled(predictions.ballTimeTillTouchGround())));
         Value throttle = ()->{
             float val = distance.val()>700? 1: (distance.val()<velocityDistance.val()?-1f:1f)*Util.cap(distance.val(),0,600)/600;
@@ -38,11 +38,11 @@ public class CatchBall extends State {
 
     @Override
     public boolean isAvailable() {
-        return predictions.ballTimeTillTouchGround()>0.2&&information.ball.location().z>150;
+        return Math.abs(information.ball.velocity().z)>100;
     }
 
     @Override
     public double getRating() {
-        return 9;
+        return 10;
     }
 }
