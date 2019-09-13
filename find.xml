@@ -1,7 +1,7 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="File '...\training\hello_world_training.py [SpeedBot]'" />
-    <option name="defaultScopeName" value="File '...\training\hello_world_training.py [SpeedBot]'" />
-    <option name="SEARCH_SCOPE" value="File '...\training\hello_world_training.py [SpeedBot]'" />
+    <option name="customScope" value="All Places" />
+    <option name="defaultScopeName" value="All Places" />
+    <option name="SEARCH_SCOPE" value="All Places" />
   </component>
 </application>
