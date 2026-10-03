@@ -6,6 +6,12 @@ Here are some historic gifs what the bot looked like and things it could do.
 
 The second version of this Bot is [Dark Bunny](https://github.com/MrDiver/DarkBunny).
 
+Official Matches
+- [Qualifier 2019 Round 1 - Speedbot vs Psyonix Allstar](https://youtu.be/g7guszgnolM?t=2932)
+- [Qualifier 2019 Round 2 - Speedbot vs MechJeb](https://youtu.be/g7guszgnolM?t=5717)
+- [Qualifier 2019 Round 3 - Speedbot vs Calculator](https://youtu.be/g7guszgnolM?t=10867)
+- [Qualifier 2019 Round 4 - Speedbot vs Psyonix Pro](https://youtu.be/g7guszgnolM?t=13534)
+- [Qualifier 2019 Round 5 - Speedbot vs Boolean Algebra Calf](https://youtu.be/g7guszgnolM?t=18914)
 # Some Gifs
 
 Preview of the chaining event System. It enabled smooth transitions between command sequences for reuse of simple actions like wavedashes etc.
