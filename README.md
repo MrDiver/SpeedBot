@@ -4,6 +4,8 @@ This was a fun Hobbyproject about the beginning of my studies in computer scienc
 
 Here are some historic gifs what the bot looked like and things it could do.
 
+The second version of this Bot is [Dark Bunny](https://github.com/MrDiver/DarkBunny).
+
 # Some Gifs
 
 Preview of the chaining event System. It enabled smooth transitions between command sequences for reuse of simple actions like wavedashes etc.
